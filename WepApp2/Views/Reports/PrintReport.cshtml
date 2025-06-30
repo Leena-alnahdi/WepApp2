@@ -1,0 +1,114 @@
+﻿@model List<WepApp2.Models.DeviceReportViewModel>
+
+@{
+    Layout = null;
+    var title = ViewBag.ReportTitle ?? "تقرير";
+    var from = ViewBag.FromDate;
+    var to = ViewBag.ToDate;
+}
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8" />
+    <title>@title</title>
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            margin: 40px;
+            color: #333;
+        }
+
+        h2, h4 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .report-meta {
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            direction: rtl;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #eaf5ea;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            color: white;
+            font-size: 13px;
+        }
+
+        .status-تشغيل {
+            background-color: #28a745;
+        }
+
+        .status-صيانة {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .status-خارج\\ الخدمة {
+            background-color: #dc3545;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            text-align: center;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+    <h2>@title</h2>
+    <div class="report-meta">
+        <div>تاريخ التغطية: @from إلى @to</div>
+        <div>التقرير من نوع: @ViewBag.ReportType</div>
+    </div>
+
+    <h4 style="text-align:right; margin-bottom:10px;">تقرير الأجهزة</h4>
+
+    <table>
+        <thead>
+            <tr>
+                <th>الرقم</th>
+                <th>اسم الجهاز</th>
+                <th>نوع الجهاز</th>
+                <th>الحالة</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.DeviceName</td>
+                    <td>@item.DeviceType</td>
+                    <td>
+                        <span class="badge status-@item.Status.Replace(" ", "\\ ")">@item.Status</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="footer">
+        تم إنشاء هذا التقرير بواسطة بوابة تقنيات الابتكار - @DateTime.Now.Year
+    </div>
+</body>
+</html>

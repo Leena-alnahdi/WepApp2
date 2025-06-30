@@ -1,0 +1,162 @@
+﻿@{
+    ViewData["Title"] = "التقارير";
+    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+}
+
+
+@section Styles {
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            direction: rtl;
+        }
+
+        .page-header {
+            padding: 20px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .stat-box {
+            flex: 1;
+            min-width: 200px;
+            max-width: 250px;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-right: 4px solid transparent;
+        }
+
+            .stat-box.total {
+                border-right-color: #3182ce;
+            }
+
+            .stat-box.maintenance {
+                border-right-color: #ed8936;
+            }
+
+            .stat-box h3 {
+                font-size: 2rem;
+                margin-bottom: 5px;
+            }
+
+        .charts-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .chart-card {
+            flex: 1;
+            min-width: 200px;
+            max-width: 300px;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .chart-title {
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #444;
+        }
+
+        .custom-btn {
+            background: linear-gradient(135deg, #13b35e 0%, #085a09 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+       
+        }
+
+    </style>
+}
+
+<div class="page-header">
+    <h1>التقارير</h1>
+    <p>تحليلات مرئية حول الأجهزة والطلبات</p>
+</div>
+
+<div class="stats">
+    <div class="stat-box total">
+        <h3>34</h3>
+        <p>عدد الطلبات هذا الشهر</p>
+    </div>
+    <div class="stat-box maintenance">
+        <h3>6</h3>
+        <p>أجهزة بحاجة للصيانة</p>
+    </div>
+</div>
+
+<a class="custom-btn" asp-controller="Reports" asp-action="CreateCustomReport">+ تقرير مخصص</a>
+
+<div class="charts-container">
+    <div class="chart-card">
+        <div class="chart-title">توزيع الأجهزة حسب الحالة</div>
+        <canvas id="deviceStatusChart"></canvas>
+    </div>
+    <div class="chart-card">
+        <div class="chart-title">أنواع الطلبات خلال الشهر</div>
+        <canvas id="requestTypeChart"></canvas>
+    </div>
+    <div class="chart-card">
+        <div class="chart-title">توزيع المشرفات حسب القسم</div>
+        <canvas id="chartSupervisors"></canvas>
+    </div>
+    <div class="chart-card">
+        <div class="chart-title">توزيع الأجهزة حسب النوع</div>
+        <canvas id="chartDeviceTypes"></canvas>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        new Chart(document.getElementById('deviceStatusChart'), {
+            type: 'pie',
+            data: {
+                labels: ['تشغيل', 'صيانة', 'خارج الخدمة'],
+                datasets: [{ data: [18, 6, 4], backgroundColor: ['#38a169', '#ed8936', '#e53e3e'] }]
+            }
+        });
+
+        new Chart(document.getElementById('requestTypeChart'), {
+            type: 'pie',
+            data: {
+                labels: ['استعارات', 'زيارات', 'استشارات', 'حجوزات أجهزة'],
+                datasets: [{ data: [10, 5, 8, 11], backgroundColor: ['#667eea', '#764ba2', '#63b3ed', '#f6ad55'] }]
+            }
+        });
+
+        new Chart(document.getElementById('chartSupervisors'), {
+            type: 'pie',
+            data: {
+                labels: ['الهندسة', 'الذكاء الاصطناعي', 'إلكترونيات'],
+                datasets: [{ data: [5, 3, 2], backgroundColor: ['#48bb78', '#ecc94b', '#4299e1'] }]
+            }
+        });
+
+        new Chart(document.getElementById('chartDeviceTypes'), {
+            type: 'pie',
+            data: {
+                labels: ['طابعات ثلاثية الأبعاد', 'حاسبات', 'أجهزة قياس'],
+                datasets: [{ data: [6, 7, 5], backgroundColor: ['#ed64a6', '#f6ad55', '#9f7aea'] }]
+            }
+        });
+    </script>
+}
