@@ -1,5 +1,4 @@
-﻿﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
 <head>
@@ -35,7 +34,7 @@
             right: -4px;
             width: 16px;
             height: 16px;
-            background: #dc2626;
+            background: #e53e3e;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -81,6 +80,13 @@
         #h2L {
             font-family: 'Tajawal', sans-serif !important;
             font-weight: bold;
+        }
+
+        .menu-logo {
+            max-width: 160px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
         }
 
         .sidebar {
@@ -151,7 +157,7 @@
         <div class="notifications-dropdown" id="notificationsDropdown">
             <div class="notifications-header">
                 <h3 class="font-bold">الإشعارات</h3>
-                <span class="status-badge" style="background: #dc2626; color: white;"></span>
+                <span class="status-badge" style="background: #e53e3e; color: white;"></span>
             </div>
             <div class="notifications-list" id="notificationsList">
                 <!-- Notifications will be populated by JavaScript -->
@@ -170,7 +176,9 @@
 
             <!-- الشريط الجانبي -->
             <nav id="sidebar" class="col-md-3 col-lg-2 sidebar p-3 bg-success text-white">
-                <h2 id="h2L" class="text-center fs-4 mb-4">ابتكارات</h2>
+                <div class="text-center mb-4">
+                    <img src="~/Images/شعار.png" alt="شعار الجامعة" class="menu-logo" />
+                </div>
                 <ul class="nav flex-column gap-2">
                     <li><a href="@Url.Action("Index", "Supervisor")" class="nav-link">📅 إدارة الطلبات</a></li>
                 </ul>
