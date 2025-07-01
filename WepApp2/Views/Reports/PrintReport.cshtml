@@ -62,7 +62,7 @@
             color: #000;
         }
 
-        .status-خارج\\ الخدمة {
+        .status-خارج-الخدمة {
             background-color: #dc3545;
         }
 
@@ -71,6 +71,31 @@
             font-size: 12px;
             text-align: center;
             color: gray;
+        }
+
+        .print-button {
+            display: block;
+            margin: 30px auto 10px;
+            padding: 10px 20px;
+            background-color: #198754;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+            .print-button:hover {
+                background-color: #146c43;
+            }
+
+        media print {
+            .print-button
+
+        {
+            display: none;
+        }
+
         }
     </style>
 </head>
@@ -100,12 +125,25 @@
                     <td>@item.DeviceName</td>
                     <td>@item.DeviceType</td>
                     <td>
-                        <span class="badge status-@item.Status.Replace(" ", "\\ ")">@item.Status</span>
+                        <span class="badge status-@item.Status.Replace(" ", "-")">@item.Status</span>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+
+    <button class="print-button" onclick="this.style.display='none'; window.print();">🖨 طباعة التقرير</button>
+
+    <style>
+        media print {
+            .print-button
+
+        {
+            display: none;
+        }
+
+        }
+    </style>
 
     <div class="footer">
         تم إنشاء هذا التقرير بواسطة بوابة تقنيات الابتكار - @DateTime.Now.Year
