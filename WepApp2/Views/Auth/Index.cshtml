@@ -1,0 +1,1158 @@
+﻿@{
+    ViewData["Title"] = "تسجيل الدخول - جامعة الملك عبدالعزيز";
+    Layout = null;
+}
+
+@Html.Raw(@"
+<!DOCTYPE html>
+<html lang=""ar"" dir=""rtl"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <meta http-equiv=""X-UA-Compatible"" content=""IE=edge"">
+    <title>تسجيل الدخول - معمل الابتكارات</title>
+
+    <!-- Bootstrap CSS -->
+    <link href=""https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"" rel=""stylesheet"">
+    <link rel=""stylesheet"" href=""https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css"">
+
+    <!-- Font Awesome - Multiple CDNs for reliability -->
+    <link rel=""stylesheet"" href=""https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"" integrity=""sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="" crossorigin=""anonymous"" referrerpolicy=""no-referrer"" />
+
+    <!-- Fallback Font Awesome -->
+    <link rel=""stylesheet"" href=""https://use.fontawesome.com/releases/v6.5.1/css/all.css"">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Font Awesome Fix */
+        .fas, .far, .fa {
+            font-family: 'Font Awesome 6 Free' !important;
+            font-weight: 900 !important;
+            font-style: normal !important;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #006C35 0%, #228B22 100%);
+            min-height: 100vh;
+            direction: rtl;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            z-index: -1;
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            animation: gradientShift 20s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+        }
+
+        /* Floating Shapes */
+        .bg-shape {
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            z-index: -1;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -150px;
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            left: -100px;
+            animation: float 20s ease-in-out infinite reverse;
+        }
+
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            top: 50%;
+            left: 10%;
+            animation: float 25s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        /* Main Container */
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Logo Section */
+        .logo-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-icon {
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            transform: rotate(-5deg);
+            transition: transform 0.3s ease;
+            padding: 10px;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-section:hover .logo-icon {
+            transform: rotate(0deg) scale(1.05);
+        }
+
+        .logo-text h2 {
+            color: white;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+        }
+
+        .logo-text span {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Auth Container - Larger and Centered */
+        .auth-wrapper {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .auth-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 30px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+            padding: 0;
+            width: 100%;
+            overflow: hidden;
+            animation: slideUp 0.4s ease;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Bootstrap Nav Tabs Customization */
+        .nav-tabs {
+            border: none;
+            background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+            margin: 0;
+            padding: 0.5rem;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            border-radius: 15px;
+            padding: 1.5rem 2rem;
+            color: #666;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background: transparent;
+            position: relative;
+            flex: 1;
+            text-align: center;
+            font-size: 1.1rem;
+            margin: 0 0.25rem;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: #006C35;
+            background: rgba(0, 108, 53, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .nav-tabs .nav-link.active {
+            color: white;
+            background: linear-gradient(135deg, #006C35, #228B22);
+            box-shadow: 0 5px 20px rgba(0, 108, 53, 0.3);
+        }
+
+        .nav-tabs .nav-link i {
+            margin-left: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            padding: 3rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.75rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            color: #2C3E50;
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .form-control {
+            padding: 1rem 1.25rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-control:focus {
+            border-color: #006C35;
+            box-shadow: 0 0 0 0.25rem rgba(0, 108, 53, 0.25);
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .form-check {
+            margin-bottom: 2rem;
+        }
+
+        .form-check-input {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-top: 0.25rem;
+            margin-left: 0.75rem;
+            cursor: pointer;
+        }
+
+        .form-check-input:checked {
+            background-color: #006C35;
+            border-color: #006C35;
+        }
+
+        .form-check-label {
+            font-size: 1rem;
+            color: #666;
+            cursor: pointer;
+            margin-right: 0.25rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #006C35, #228B22);
+            color: white;
+            box-shadow: 0 5px 20px rgba(0, 108, 53, 0.3);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #228B22, #006C35);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 108, 53, 0.4);
+            color: white;
+        }
+
+        .btn-lg {
+            padding: 1.25rem 2.5rem;
+            font-size: 1.2rem;
+        }
+
+        /* Links */
+        .auth-link {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .auth-link a {
+            color: #006C35;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .auth-link a:hover {
+            text-decoration: underline;
+            color: #228B22;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 25px;
+            max-width: 500px;
+            margin: 5% auto;
+            padding: 3rem;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(-50px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: #f0f0f0;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .close-modal:hover {
+            color: white;
+            background: #EF4444;
+            transform: rotate(90deg);
+        }
+
+        /* Reset Password Modal */
+        .reset-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .reset-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, #006C35, #228B22);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 3rem;
+            color: white;
+            box-shadow: 0 10px 40px rgba(0, 108, 53, 0.4);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 10px 40px rgba(0, 108, 53, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 15px 50px rgba(0, 108, 53, 0.5); }
+        }
+
+        .reset-header h3 {
+            color: #006C35;
+            margin-bottom: 0.75rem;
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .reset-header p {
+            color: #666;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 3000;
+            display: none;
+            min-width: 350px;
+            animation: notificationSlide 0.3s ease;
+        }
+
+        @keyframes notificationSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .notification.success {
+            border-right: 5px solid #10B981;
+            background: linear-gradient(to left, rgba(16, 185, 129, 0.1), white);
+        }
+
+        .notification.error {
+            border-right: 5px solid #EF4444;
+            background: linear-gradient(to left, rgba(239, 68, 68, 0.1), white);
+        }
+
+        .notification.warning {
+            border-right: 5px solid #F59E0B;
+            background: linear-gradient(to left, rgba(245, 158, 11, 0.1), white);
+        }
+
+        /* Loading State */
+        .btn.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .btn.loading::after {
+            content: """";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 3px solid white;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spinner 0.6s linear infinite;
+        }
+
+        @keyframes spinner {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive - Better Bootstrap Integration */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 15px;
+            }
+
+            .auth-wrapper {
+                max-width: 100%;
+            }
+
+            .tab-content {
+                padding: 2rem 1.5rem;
+            }
+
+            .nav-tabs .nav-link {
+                padding: 1.25rem 1rem;
+                font-size: 1rem;
+                margin: 0 0.1rem;
+            }
+
+            .nav-tabs .nav-link i {
+                display: block;
+                margin: 0 0 0.5rem 0;
+                font-size: 1.5rem;
+            }
+
+            .logo-text h2 {
+                font-size: 1.8rem;
+            }
+
+            .logo-text span {
+                font-size: 1.1rem;
+            }
+
+            .btn-lg {
+                padding: 1rem 1.5rem;
+                font-size: 1.1rem;
+            }
+
+            .bg-shape {
+                display: none;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .modal-content {
+                margin: 10% 15px;
+                padding: 2rem 1.5rem;
+            }
+
+            .form-control {
+                padding: 0.875rem 1rem;
+                font-size: 1rem;
+            }
+
+            .form-group label {
+                font-size: 1rem;
+            }
+
+            .notification {
+                min-width: 90%;
+                padding: 1rem 1.5rem;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 380px) {
+            .nav-tabs {
+                padding: 0.25rem;
+            }
+
+            .nav-tabs .nav-link {
+                padding: 1rem 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            .tab-content {
+                padding: 1.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Shapes -->
+    <div class=""bg-shape shape-1""></div>
+    <div class=""bg-shape shape-2""></div>
+    <div class=""bg-shape shape-3""></div>
+
+    <!-- Main Container -->
+    <div class=""container-fluid main-container"">
+        <div class=""auth-wrapper"">
+            <!-- Logo Section -->
+            <div class=""logo-section"">
+                <div class=""logo-icon"">
+                    <img src=""~/Images/logo.png"" alt=""شعار جامعة الملك عبدالعزيز"">
+                </div>
+                <div class=""logo-text"">
+                    <h2>معمل الابتكارات</h2>
+                    <span>جامعة الملك عبدالعزيز</span>
+                </div>
+            </div>
+
+            <!-- Auth Container -->
+            <div class=""auth-container"">
+                <!-- Nav Tabs -->
+                <ul class=""nav nav-tabs"" id=""authTabs"" role=""tablist"">
+                    <li class=""nav-item"" role=""presentation"">
+                        <button class=""nav-link active"" id=""login-tab"" data-bs-toggle=""tab"" data-bs-target=""#login"" type=""button"" role=""tab"" aria-controls=""login"" aria-selected=""true"">
+                            <i class=""fas fa-sign-in-alt""></i>
+                            <span>تسجيل الدخول</span>
+                        </button>
+                    </li>
+                    <li class=""nav-item"" role=""presentation"">
+                        <button class=""nav-link"" id=""register-tab"" data-bs-toggle=""tab"" data-bs-target=""#register"" type=""button"" role=""tab"" aria-controls=""register"" aria-selected=""false"">
+                            <i class=""fas fa-user-plus""></i>
+                            <span>إنشاء حساب</span>
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class=""tab-content"" id=""authTabContent"">
+                    <!-- Login Tab -->
+                    <div class=""tab-pane fade show active"" id=""login"" role=""tabpanel"" aria-labelledby=""login-tab"">
+                        <form id=""loginForm"">
+                            <div class=""form-group"">
+                                <label for=""loginUsername"">اسم المستخدم:</label>
+                                <input type=""text"" class=""form-control"" id=""loginUsername"" placeholder=""اسم المستخدم"" pattern=""[0-9]{7}"" maxlength=""7"" required>
+                            </div>
+                            <div class=""form-group"">
+                                <label for=""loginPassword"">كلمة المرور:</label>
+                                <input type=""password"" class=""form-control"" id=""loginPassword"" placeholder=""أدخل كلمة المرور"" required>
+                            </div>
+                            <div class=""form-check"">
+                                <input type=""checkbox"" class=""form-check-input"" id=""rememberMe"">
+                                <label class=""form-check-label"" for=""rememberMe"">
+                                    تذكرني
+                                </label>
+                            </div>
+                            <button type=""submit"" class=""btn btn-success btn-lg w-100"">
+                                <i class=""fas fa-sign-in-alt""></i>
+                                تسجيل الدخول
+                            </button>
+                            <div class=""auth-link"">
+                                <a href=""#"" onclick=""openResetPasswordModal()"">نسيت كلمة المرور؟</a>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Register Tab -->
+                    <div class=""tab-pane fade"" id=""register"" role=""tabpanel"" aria-labelledby=""register-tab"">
+                        <form id=""registerForm"">
+                            <div class=""row g-3"">
+                                <div class=""col-md-6"">
+                                    <div class=""form-group"">
+                                        <label for=""regFirstName"">الاسم الأول:</label>
+                                        <input type=""text"" class=""form-control"" id=""regFirstName"" placeholder=""محمد"" required>
+                                    </div>
+                                </div>
+                                <div class=""col-md-6"">
+                                    <div class=""form-group"">
+                                        <label for=""regLastName"">الاسم الأخير:</label>
+                                        <input type=""text"" class=""form-control"" id=""regLastName"" placeholder=""أحمد"" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class=""form-group"">
+                                <label for=""regEmail"">البريد الإلكتروني الجامعي:</label>
+                                <input type=""email"" class=""form-control"" id=""regEmail"" placeholder=""example@stu.kau.edu.sa"" required>
+                            </div>
+                            <div class=""row g-3"">
+                                <div class=""col-md-6"">
+                                    <div class=""form-group"">
+                                        <label for=""regUsername"">اسم المستخدم:</label>
+                                        <input type=""text"" class=""form-control"" id=""regUsername"" placeholder=""الرقم الجامعي/الرقم الوظيفي"" pattern=""[0-9]{7}"" maxlength=""7"" required>
+                                    </div>
+                                </div>
+                                <div class=""col-md-6"">
+                                    <div class=""form-group"">
+                                        <label for=""regPhone"">رقم الهاتف:</label>
+                                        <input type=""tel"" class=""form-control"" id=""regPhone"" placeholder=""+966 5xxxxxxxx"" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class=""row g-3"">
+                                <div class=""col-md-6"">
+                                    <div class=""form-group"">
+                                        <label for=""regCollege"">الكلية:</label>
+                                        <select class=""form-select form-control"" id=""regCollege"" required onchange=""updateDepartments()"">
+                                            <option value="""">اختر الكلية</option>
+                                            <option value=""computing"">كلية الحاسوب</option>
+                                            <option value=""engineering"">كلية الهندسة</option>
+                                            <option value=""science"">كلية العلوم</option>
+                                            <option value=""design"">كلية التصاميم</option>
+                                            <option value=""business"">كلية الإدارة</option>
+                                            <option value=""other"">أخرى</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class=""col-md-6"">
+                                    <div class=""form-group"">
+                                        <label for=""regDepartment"">القسم:</label>
+                                        <div id=""departmentContainer"">
+                                            <select class=""form-select form-control"" id=""regDepartment"" required>
+                                                <option value="""">اختر القسم</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class=""form-group"">
+                                <label for=""regUserType"">نوع المستخدم:</label>
+                                <select class=""form-select form-control"" id=""regUserType"" required>
+                                    <option value="""">اختر نوع المستخدم</option>
+                                    <option value=""student"">طالب</option>
+                                    <option value=""faculty"">عضو هيئة تدريس</option>
+                                </select>
+                            </div>
+                            <div class=""row g-3"">
+                                <div class=""col-md-6"">
+                                    <div class=""form-group"">
+                                        <label for=""regPassword"">كلمة المرور:</label>
+                                        <input type=""password"" class=""form-control"" id=""regPassword"" placeholder=""8 أحرف على الأقل"" minlength=""8"" required>
+                                    </div>
+                                </div>
+                                <div class=""col-md-6"">
+                                    <div class=""form-group"">
+                                        <label for=""regConfirmPassword"">تأكيد كلمة المرور:</label>
+                                        <input type=""password"" class=""form-control"" id=""regConfirmPassword"" placeholder=""أعد كتابة كلمة المرور"" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class=""form-check"">
+                                <input type=""checkbox"" class=""form-check-input"" id=""agreeTerms"" required>
+                                <label class=""form-check-label"" for=""agreeTerms"">
+                                    أوافق على <a href=""#"" style=""color: #006C35;"">الشروط والأحكام</a> وسياسة الخصوصية
+                                </label>
+                            </div>
+                            <button type=""submit"" class=""btn btn-success btn-lg w-100 mt-3"">
+                                <i class=""fas fa-user-plus""></i>
+                                إنشاء الحساب
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reset Password Modal -->
+    <div id=""resetPasswordModal"" class=""modal"">
+        <div class=""modal-content"">
+            <button class=""close-modal"" onclick=""closeModal('resetPasswordModal')"">
+                <i class=""fas fa-times""></i>
+            </button>
+
+            <div class=""reset-header"">
+                <div class=""reset-icon"">
+                    <i class=""fas fa-key""></i>
+                </div>
+                <h3>استعادة كلمة المرور</h3>
+                <p>أدخل بريدك الإلكتروني الجامعي وسنرسل لك رابط لإعادة تعيين كلمة المرور</p>
+            </div>
+
+            <form id=""resetPasswordForm"">
+                <div class=""form-group"">
+                    <label for=""resetEmail"">البريد الإلكتروني الجامعي:</label>
+                    <input type=""email"" class=""form-control"" id=""resetEmail"" placeholder=""example@kau.edu.sa"" required>
+                    <small class=""form-text text-muted"">يجب أن يكون البريد الإلكتروني مسجل مسبقاً في النظام</small>
+                </div>
+                <button type=""submit"" class=""btn btn-success w-100 mb-3"">
+                    <i class=""fas fa-paper-plane""></i>
+                    إرسال رابط الاستعادة
+                </button>
+                <div class=""auth-link"">
+                    <a href=""#"" onclick=""closeModal('resetPasswordModal')"">
+                        <i class=""fas fa-arrow-right""></i>
+                        العودة لتسجيل الدخول
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id=""notification"" class=""notification"">
+        <div style=""display: flex; align-items: center; gap: 0.75rem;"">
+            <i id=""notificationIcon"" class=""fas fa-check-circle"" style=""font-size: 1.5rem;""></i>
+            <span id=""notificationText"" style=""font-size: 1.05rem;"">نجح العملية</span>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src=""https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js""></script>
+
+    <script>
+        // Departments by college
+        const departments = {
+            computing: [
+                'علوم الحاسوب',
+                'هندسة الحاسوب',
+                'نظم المعلومات',
+                'تقنية المعلومات',
+                'الذكاء الاصطناعي',
+                'أمن المعلومات'
+            ],
+            engineering: [
+                'الهندسة الكهربائية',
+                'الهندسة الميكانيكية',
+                'الهندسة المدنية',
+                'الهندسة الكيميائية',
+                'هندسة الطيران',
+                'الهندسة الصناعية'
+            ],
+            science: [
+                'الرياضيات',
+                'الفيزياء',
+                'الكيمياء',
+                'الأحياء',
+                'الإحصاء',
+                'علوم البيئة'
+            ],
+            design: [
+                'التصميم الجرافيكي',
+                'التصميم الداخلي',
+                'تصميم المنتجات',
+                'الفنون التطبيقية',
+                'التصميم الرقمي'
+            ],
+            business: [
+                'إدارة الأعمال',
+                'المحاسبة',
+                'التسويق',
+                'التمويل',
+                'إدارة الموارد البشرية',
+                'نظم المعلومات الإدارية'
+            ]
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if Font Awesome is loaded, if not add fallback icons
+            setTimeout(function() {
+                const testIcon = document.querySelector('.fa-flask');
+                if (testIcon) {
+                    const computedStyle = window.getComputedStyle(testIcon, '::before');
+
+                    if (!computedStyle.content || computedStyle.content === 'none') {
+                        console.warn('Font Awesome not loading properly, adding text fallbacks');
+                        // Add text fallbacks for critical icons
+                        document.querySelectorAll('.fas').forEach(icon => {
+                            if (icon.classList.contains('fa-flask') && !icon.textContent) {
+                                icon.textContent = '⚗️';
+                            } else if (icon.classList.contains('fa-sign-in-alt') && !icon.textContent) {
+                                icon.textContent = '🔑';
+                            } else if (icon.classList.contains('fa-user-plus') && !icon.textContent) {
+                                icon.textContent = '👤+';
+                            } else if (icon.classList.contains('fa-key') && !icon.textContent) {
+                                icon.textContent = '🔐';
+                            } else if (icon.classList.contains('fa-paper-plane') && !icon.textContent) {
+                                icon.textContent = '✈️';
+                            } else if (icon.classList.contains('fa-times') && !icon.textContent) {
+                                icon.textContent = '✕';
+                            } else if (icon.classList.contains('fa-arrow-right') && !icon.textContent) {
+                                icon.textContent = '←';
+                            } else if (icon.classList.contains('fa-check-circle') && !icon.textContent) {
+                                icon.textContent = '✓';
+                            } else if (icon.classList.contains('fa-exclamation-circle') && !icon.textContent) {
+                                icon.textContent = '!';
+                            }
+                        });
+                    }
+                }
+            }, 500);
+
+            // Add input validation for username fields
+            const usernameFields = ['loginUsername', 'regUsername'];
+            usernameFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', function(e) {
+                        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                        if (e.target.value.length > 7) {
+                            e.target.value = e.target.value.slice(0, 7);
+                        }
+                    });
+
+                    // Add placeholder animation
+                    field.addEventListener('focus', function() {
+                        this.placeholder = '1234567';
+                    });
+
+                    field.addEventListener('blur', function() {
+                        if (fieldId === 'regUsername') {
+                            this.placeholder = 'الرقم الجامعي/الرقم الوظيفي';
+                        } else {
+                            this.placeholder = 'اسم المستخدم';
+                        }
+                    });
+                }
+            });
+
+            // Password strength indicator
+            const passwordField = document.getElementById('regPassword');
+            if (passwordField) {
+                passwordField.addEventListener('input', function() {
+                    const strength = checkPasswordStrength(this.value);
+                    updatePasswordStrengthUI(strength);
+                });
+            }
+        });
+
+        // Password strength checker
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]+/)) strength++;
+            if (password.match(/[A-Z]+/)) strength++;
+            if (password.match(/[0-9]+/)) strength++;
+            if (password.match(/[$@#&!]+/)) strength++;
+            return strength;
+        }
+
+        function updatePasswordStrengthUI(strength) {
+            // This function can be expanded to show password strength visually
+            console.log('Password strength:', strength);
+        }
+
+        // Update departments based on selected college
+        function updateDepartments() {
+            const college = document.getElementById('regCollege').value;
+            const departmentContainer = document.getElementById('departmentContainer');
+
+            if (college === 'other') {
+                // Convert to text input for ""other"" college
+                departmentContainer.innerHTML = `
+                    <input type=""text"" class=""form-control"" id=""regDepartment"" placeholder=""أدخل اسم القسم"" required>
+                `;
+            } else {
+                // Convert back to select for predefined colleges
+                departmentContainer.innerHTML = `
+                    <select class=""form-select form-control"" id=""regDepartment"" required>
+                        <option value="""">اختر القسم</option>
+                    </select>
+                `;
+
+                const departmentSelect = document.getElementById('regDepartment');
+
+                if (college && departments[college]) {
+                    departments[college].forEach(dept => {
+                        const option = document.createElement('option');
+                        option.value = dept;
+                        option.textContent = dept;
+                        departmentSelect.appendChild(option);
+                    });
+                }
+            }
+        }
+
+        // Modal functions
+        function openResetPasswordModal() {
+            document.getElementById('resetPasswordModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Notification system
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            const notificationIcon = document.getElementById('notificationIcon');
+
+            notificationText.textContent = message;
+
+            const icons = {
+                'success': 'fas fa-check-circle',
+                'error': 'fas fa-exclamation-circle',
+                'warning': 'fas fa-exclamation-triangle',
+                'info': 'fas fa-info-circle'
+            };
+
+            notificationIcon.className = icons[type] || icons['info'];
+            notificationIcon.style.fontSize = '1.5rem';
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 4000);
+        }
+
+        // Form submission handlers
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const submitBtn = this.querySelector('button[type=""submit""]');
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            // Add loading state
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+
+            // Validate username (7 digits only)
+            if (!/^[0-9]{7}$/.test(username)) {
+                showNotification('اسم المستخدم يجب أن يتكون من 7 أرقام فقط', 'error');
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+                return;
+            }
+
+            // Simulate API call
+            setTimeout(() => {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+                showNotification('تم تسجيل الدخول بنجاح!', 'success');
+
+                // Redirect after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html'; // Or main page
+                }, 2000);
+            }, 1500);
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const submitBtn = this.querySelector('button[type=""submit""]');
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            const username = document.getElementById('regUsername').value;
+
+            // Add loading state
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+
+            // Validation - Updated to accept both email types
+            if (!email.includes('@kau.edu.sa') && !email.includes('@stu.kau.edu.sa')) {
+                showNotification('يجب استخدام البريد الجامعي', 'error');
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+                return;
+            }
+
+            if (!/^[0-9]{7}$/.test(username)) {
+                showNotification('اسم المستخدم يجب أن يتكون من 7 أرقام فقط', 'error');
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showNotification('كلمات المرور غير متطابقة', 'error');
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+                return;
+            }
+
+            if (password.length < 8) {
+                showNotification('كلمة المرور يجب أن تكون 8 أحرف على الأقل', 'error');
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+                return;
+            }
+
+            // Simulate API call
+            setTimeout(() => {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+                showNotification('تم إنشاء الحساب بنجاح! جاري تحويلك...', 'success');
+
+                setTimeout(() => {
+                    // Switch to login tab
+                    const loginTab = new bootstrap.Tab(document.getElementById('login-tab'));
+                    loginTab.show();
+                }, 2000);
+            }, 1500);
+        });
+
+        // Reset Password Form Handler
+        document.getElementById('resetPasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const submitBtn = this.querySelector('button[type=""submit""]');
+            const email = document.getElementById('resetEmail').value;
+
+            // Add loading state
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+
+            // Updated validation to accept both email types
+            if (!email.includes('@kau.edu.sa') && !email.includes('@stu.kau.edu.sa')) {
+                showNotification('يجب استخدام البريد الإلكتروني الجامعي', 'error');
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+                return;
+            }
+
+            // Simulate API call
+            setTimeout(() => {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+                closeModal('resetPasswordModal');
+                showNotification('تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني', 'success');
+            }, 1500);
+        });
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById('resetPasswordModal');
+            if (event.target == modal) {
+                closeModal('resetPasswordModal');
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal('resetPasswordModal');
+            }
+        });
+
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^=""#""]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+")
