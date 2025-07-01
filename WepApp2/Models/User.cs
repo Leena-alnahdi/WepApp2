@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace WepApp2.Models;
 
 public partial class User
 {
+[Key]
     public int UserId { get; set; }
 
     public string FirstName { get; set; } = null!;
@@ -28,6 +31,6 @@ public partial class User
     public DateTime LastLogIn { get; set; }
 
     public bool IsActive { get; set; }
-
+    [NotMapped]
     public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
 }
