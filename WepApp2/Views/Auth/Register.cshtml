@@ -292,6 +292,24 @@
                 color: #2d8a57;
                 text-decoration: underline;
             }
+
+        /* تنسيق الزر المعطل */
+        .btn-success:disabled {
+            background: #cccccc !important;
+            cursor: not-allowed;
+            opacity: 0.6;
+            box-shadow: none !important;
+        }
+
+            .btn-success:disabled:hover {
+                transform: none !important;
+                box-shadow: none !important;
+                background: #cccccc !important;
+            }
+
+            .btn-success:disabled::before {
+                display: none;
+            }
     </style>
 </head>
 <body>
@@ -337,6 +355,11 @@
                     يوجد مستخدم مسجل بنفس اسم المستخدم أو البريد الإلكتروني.
                 </div>
             }
+
+            <div id="termsError" class="alert alert-warning" style="display: none;">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                يجب الموافقة على الشروط والأحكام قبل إنشاء الحساب
+            </div>
 
             <form method="post" asp-action="Register">
                 <div class="row text-end">
@@ -448,13 +471,13 @@
                     </div>
                 </div>
                 <div class="form-check mb-3" style="text-align: right; direction: rtl;">
-                    <input class="form-check-input" type="checkbox" id="terms" style="float: right; margin-right: 0; margin-left: 0.5rem;" />
+                    <input class="form-check-input" type="checkbox" id="terms" style="float: right; margin-right: 0; margin-left: 0.5rem;" required />
                     <label class="form-check-label" for="terms" style="text-align: right;">
                         <i class="fas fa-check-circle me-1"></i>
                         أوافق على <a href="#">الشروط والأحكام</a> وسياسة الخصوصية
                     </label>
                 </div>
-                <button type="submit" class="btn btn-success w-100">
+                <button type="submit" class="btn btn-success w-100" id="submitBtn" disabled>
                     <i class="fa fa-user-plus"></i>
                     إنشاء الحساب
                 </button>
@@ -500,6 +523,28 @@
         document.addEventListener('DOMContentLoaded', function() {
             const otherDiv = document.getElementById('otherFacultyDiv');
             otherDiv.style.display = 'none';
+
+            // إضافة التحكم في زر الإرسال بناءً على الموافقة على الشروط
+            const termsCheckbox = document.getElementById('terms');
+            const submitBtn = document.getElementById('submitBtn');
+
+            termsCheckbox.addEventListener('change', function() {
+                submitBtn.disabled = !this.checked;
+                // إخفاء رسالة الخطأ عند تحديد الموافقة
+                if (this.checked) {
+                    document.getElementById('termsError').style.display = 'none';
+                }
+            });
+
+            // إضافة حدث للنقر على الزر المعطل
+            submitBtn.addEventListener('click', function(e) {
+                if (!termsCheckbox.checked) {
+                    e.preventDefault();
+                    document.getElementById('termsError').style.display = 'block';
+                    // التمرير لأعلى لرؤية رسالة الخطأ
+                    document.getElementById('termsError').scrollIntoView({ behavior: 'smooth' });
+                }
+            });
         });
     </script>
 </body>
