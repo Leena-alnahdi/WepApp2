@@ -1,6 +1,7 @@
 ﻿@{
     ViewBag.Title = "الأسئلة الشائعة  - معمل الابتكارات";
-    Layout = null;
+    Layout = "_Layout_Bootstrap";
+}
 }
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -312,20 +313,21 @@
                 #questionForm button[type="submit"]:hover {
                     background-color: #228B22;
                 }
+
+        .btn-primary:active,
+        .btn-primary:focus,
+        .btn-primary:visited {
+            background-color: #228B22 
+            border-color: #228B22 
+            color: white 
+            box-shadow: none
+        }
+
     </style>
 </head>
 
 <body>
-    <div class="page-container">
-        <div class="breadcrumb">
-            <div class="breadcrumb-container">
-                <nav class="breadcrumb-nav">
-                    <a href="#"><i class="fas fa-home"></i> الرئيسية</a>
-                    <span class="breadcrumb-separator">/</span>
-                    <span class="breadcrumb-current">الأسئلة الشائعة</span>
-                </nav>
-            </div>
-        </div>
+    
 
         <div class="requests-page">
             <div class="requests-container">
