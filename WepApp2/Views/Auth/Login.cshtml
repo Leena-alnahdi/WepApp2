@@ -221,6 +221,12 @@
             box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
         }
 
+        .alert-success {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
         .mb-3 {
             margin-bottom: 20px;
         }
@@ -309,6 +315,13 @@
                 </div>
             }
 
+            <!-- Success message for password reset -->
+            <div class="alert alert-success" id="resetSuccessAlert" style="display: none;">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>تم إرسال رابط الاستعادة بنجاح!</strong><br>
+                تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني. يرجى فحص بريدك الإلكتروني واتباع التعليمات.
+            </div>
+
             <form method="post" asp-action="Login">
                 @Html.AntiForgeryToken()
 
@@ -331,7 +344,6 @@
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="rememberMe" />
                     <label class="form-check-label" for="rememberMe">
-                        <i class="fas fa-heart me-1"></i>
                         تذكرني
                     </label>
                 </div>
@@ -341,12 +353,40 @@
                     تسجيل الدخول
                 </button>
 
-                <a href="#" class="forgot-password">
+                <a href="/Auth/ForgotPassword" class="forgot-password">
                     <i class="fas fa-key me-2"></i>
                     نسيت كلمة المرور؟
                 </a>
             </form>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for reset success message
+            const urlParams = new URLSearchParams(window.location.search);
+            const resetSuccess = urlParams.get('resetSuccess');
+
+            if (resetSuccess === 'true') {
+                const successAlert = document.getElementById('resetSuccessAlert');
+                successAlert.style.display = 'block';
+
+                // Auto-hide success message after 8 seconds
+                setTimeout(() => {
+                    successAlert.style.opacity = '0';
+                    successAlert.style.transform = 'translateY(-20px)';
+                    setTimeout(() => {
+                        successAlert.style.display = 'none';
+                    }, 300);
+                }, 8000);
+
+                // Clean up URL
+                if (window.history && window.history.pushState) {
+                    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                    window.history.pushState({path: newUrl}, '', newUrl);
+                }
+            }
+        });
+    </script>
 </body>
 </html>

@@ -13,7 +13,7 @@ namespace WepApp2.Controllers
         {
             _context = context;
         }
-
+        
         // GET: Login
         [HttpGet]
         public IActionResult Login()
@@ -31,7 +31,7 @@ namespace WepApp2.Controllers
             if (existingUser != null)
             {
                 // مثال: حفظ في السيشن أو الانتقال للداشبورد
-                return RedirectToAction("Dashboard");
+                return RedirectToAction("HomePage");
             }
 
             ViewBag.LoginFailed = true;
@@ -86,14 +86,40 @@ namespace WepApp2.Controllers
         }
 
         // Dashboard view
-        public IActionResult Dashboard()
+        public IActionResult HomePage()
         {
             return View();
         }
 
-        public IActionResult Index()
+        // GET: عرض صفحة نسيت كلمة المرور
+        public IActionResult ForgotPassword()
         {
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(User model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+
+                if (user != null)
+                {
+                    // إرسال بريد إلكتروني فعلي هنا
+                    // SendPasswordResetEmail(user.Email);
+
+                    return RedirectToAction("Login", new { resetSuccess = true });
+                }
+                else
+                {
+                    ViewBag.Error = true;
+                    return View(model);
+                }
+            }
+
+            return View(model);
         }
     }
 }
