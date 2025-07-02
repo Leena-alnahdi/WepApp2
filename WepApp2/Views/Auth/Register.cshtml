@@ -227,23 +227,20 @@
         }
 
         @@media (max-width: 576px) {
-            .auth-box
+            .auth-box {
+                margin: 20px;
+                padding: 30px 25px;
+            }
 
-        {
-            margin: 20px;
-            padding: 30px 25px;
-        }
+            .logo {
+                max-width: 150px;
+                max-height: 90px;
+            }
 
-        .logo {
-            max-width: 150px;
-            max-height: 90px;
-        }
-
-        .nav-tabs-custom .nav-link {
-            padding: 10px 15px;
-            font-size: 14px;
-        }
-
+            .nav-tabs-custom .nav-link {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
         }
 
         /* تحسين الأيقونات */
@@ -257,18 +254,15 @@
         }
 
         @@keyframes slideUp {
-            from
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
 
-        {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .header-title {
@@ -276,18 +270,15 @@
         }
 
         @@keyframes fadeIn {
-            from
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
 
-        {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* تنسيق الروابط */
@@ -301,6 +292,24 @@
                 color: #2d8a57;
                 text-decoration: underline;
             }
+
+        /* تنسيق الزر المعطل */
+        .btn-success:disabled {
+            background: #cccccc !important;
+            cursor: not-allowed;
+            opacity: 0.6;
+            box-shadow: none !important;
+        }
+
+            .btn-success:disabled:hover {
+                transform: none !important;
+                box-shadow: none !important;
+                background: #cccccc !important;
+            }
+
+            .btn-success:disabled::before {
+                display: none;
+            }
     </style>
 </head>
 <body>
@@ -313,13 +322,13 @@
 
         <div class="auth-box">
             <div class="nav-tabs-custom d-flex">
-                <a href="/Auth/Register" class="nav-link active flex-fill text-center">
-                    <i class="fas fa-user-plus me-2"></i>
-                    إنشاء حساب
-                </a>
                 <a href="/Auth/Login" class="nav-link flex-fill text-center">
                     <i class="fas fa-sign-in-alt me-2"></i>
                     تسجيل الدخول
+                </a>
+                <a href="/Auth/Register" class="nav-link active flex-fill text-center">
+                    <i class="fas fa-user-plus me-2"></i>
+                    إنشاء حساب
                 </a>
             </div>
 
@@ -346,6 +355,11 @@
                     يوجد مستخدم مسجل بنفس اسم المستخدم أو البريد الإلكتروني.
                 </div>
             }
+
+            <div id="termsError" class="alert alert-warning" style="display: none;">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                يجب الموافقة على الشروط والأحكام قبل إنشاء الحساب
+            </div>
 
             <form method="post" asp-action="Register">
                 <div class="row text-end">
@@ -457,13 +471,13 @@
                     </div>
                 </div>
                 <div class="form-check mb-3" style="text-align: right; direction: rtl;">
-                    <input class="form-check-input" type="checkbox" id="terms" style="float: right; margin-right: 0; margin-left: 0.5rem;" />
+                    <input class="form-check-input" type="checkbox" id="terms" style="float: right; margin-right: 0; margin-left: 0.5rem;" required />
                     <label class="form-check-label" for="terms" style="text-align: right;">
                         <i class="fas fa-check-circle me-1"></i>
                         أوافق على <a href="#">الشروط والأحكام</a> وسياسة الخصوصية
                     </label>
                 </div>
-                <button type="submit" class="btn btn-success w-100">
+                <button type="submit" class="btn btn-success w-100" id="submitBtn" disabled>
                     <i class="fa fa-user-plus"></i>
                     إنشاء الحساب
                 </button>
@@ -509,6 +523,28 @@
         document.addEventListener('DOMContentLoaded', function() {
             const otherDiv = document.getElementById('otherFacultyDiv');
             otherDiv.style.display = 'none';
+
+            // إضافة التحكم في زر الإرسال بناءً على الموافقة على الشروط
+            const termsCheckbox = document.getElementById('terms');
+            const submitBtn = document.getElementById('submitBtn');
+
+            termsCheckbox.addEventListener('change', function() {
+                submitBtn.disabled = !this.checked;
+                // إخفاء رسالة الخطأ عند تحديد الموافقة
+                if (this.checked) {
+                    document.getElementById('termsError').style.display = 'none';
+                }
+            });
+
+            // إضافة حدث للنقر على الزر المعطل
+            submitBtn.addEventListener('click', function(e) {
+                if (!termsCheckbox.checked) {
+                    e.preventDefault();
+                    document.getElementById('termsError').style.display = 'block';
+                    // التمرير لأعلى لرؤية رسالة الخطأ
+                    document.getElementById('termsError').scrollIntoView({ behavior: 'smooth' });
+                }
+            });
         });
     </script>
 </body>
