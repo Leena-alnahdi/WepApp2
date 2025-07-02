@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WepApp2.Data;
 using WepApp2.Models;
@@ -21,6 +20,7 @@ namespace WepApp2.Controllers
         {
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Login(User user)
@@ -38,10 +38,6 @@ namespace WepApp2.Controllers
             return View(user);
         }
 
-
-
-
-
         // GET: Register
         [HttpGet]
         public IActionResult Register()
@@ -50,29 +46,51 @@ namespace WepApp2.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(User user)
+        public IActionResult Register(User user, string ConfirmPassword)
         {
+            // التحقق من تطابق كلمتي المرور
+            if (user.PassWord != ConfirmPassword)
+            {
+                ViewBag.PasswordMismatch = true;
+                return View(user);
+            }
+
+            // التحقق من أن كلمة المرور ليست فارغة
+            if (string.IsNullOrWhiteSpace(user.PassWord))
+            {
+                ViewBag.PasswordEmpty = true;
+                return View(user);
+            }
+
+            // التحقق من وجود مستخدم بنفس اسم المستخدم أو البريد الإلكتروني
+            var existingUser = _context.Users
+                .FirstOrDefault(u => u.UserName == user.UserName || u.Email == user.Email);
+
+            if (existingUser != null)
+            {
+                ViewBag.UserExists = true;
+                return View(user);
+            }
+
             if (ModelState.IsValid)
             {
-                user.UserId = new Random().Next(1000, 9999); // <<<<< هذا السطر مهم
+                user.UserId = new Random().Next(1000, 9999);
                 user.LastLogIn = DateTime.Now;
                 user.IsActive = true;
-
                 _context.Users.Add(user);
                 _context.SaveChanges();
-
                 return RedirectToAction("Login");
             }
 
             return View(user);
         }
 
-
         // Dashboard view
         public IActionResult Dashboard()
         {
             return View();
         }
+
         public IActionResult Index()
         {
             return View();
