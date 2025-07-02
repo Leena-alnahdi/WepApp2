@@ -226,23 +226,20 @@
         }
 
         @@media (max-width: 576px) {
-            .auth-box
+            .auth-box {
+                margin: 20px;
+                padding: 30px 25px;
+            }
 
-        {
-            margin: 20px;
-            padding: 30px 25px;
-        }
+            .logo {
+                max-width: 150px;
+                max-height: 90px;
+            }
 
-        .logo {
-            max-width: 150px;
-            max-height: 90px;
-        }
-
-        .nav-tabs-custom .nav-link {
-            padding: 10px 15px;
-            font-size: 14px;
-        }
-
+            .nav-tabs-custom .nav-link {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
         }
 
         /* تحسين الأيقونات */
@@ -256,18 +253,15 @@
         }
 
         @@keyframes slideUp {
-            from
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
 
-        {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .header-title {
@@ -275,18 +269,15 @@
         }
 
         @@keyframes fadeIn {
-            from
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
 
-        {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
