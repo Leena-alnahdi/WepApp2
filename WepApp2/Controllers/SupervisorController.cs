@@ -10,9 +10,5 @@ namespace WebsiteProject.Controllers
         }
 
 
-        public IActionResult Profile()
-        {
-            return View();
-        }
     }
 }
