@@ -3,6 +3,7 @@
 /* ===================================== */
 
 /* Ensure proper padding for containers */
+@import url('reports-styles.css');
 .p-4 {
     padding: 1.5rem !important;
 }
