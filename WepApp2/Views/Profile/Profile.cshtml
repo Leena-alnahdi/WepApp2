@@ -1,261 +1,75 @@
-﻿﻿@{
-ViewBag.Title = "البيانات الشخصية";
+﻿@{
+    ViewBag.Title = "البيانات الشخصية2";
 }
 
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+<!-- ربط ملف CSS -->
+<link rel="stylesheet" href="~/css/profile.css" />
 
-    body {
-        background-color: #f5f7fa;
-        color: #333;
-        direction: rtl;
-        font-family: 'Tajawal', sans-serif;
-    }
-
-    .main {
-        padding: 30px;
-    }
-
-    .page-header {
-        text-align: center;
-        margin-bottom: 3rem;
-    }
-
-        .page-header h1 {
-            color: #2C3E50;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .page-header p {
-            color: #666;
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-    .tracking-section {
-        background: #fff;
-        padding: 2rem;
-        border-radius: 15px;
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-
-        .tracking-section h3 {
-            color: #13b35e;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-    .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-    }
-
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #2C3E50;
-            font-weight: 500;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-            .form-group input:focus {
-                outline: none;
-                border-color: #13b35e;
-            }
-
-            .form-group input[readonly] {
-                background-color: #f8f9fa;
-                color: #6c757d;
-            }
-
-            .form-group input.editable {
-                background-color: white;
-                color: #2C3E50;
-            }
-
-    .btn {
-        padding: 0.7rem 1.5rem;
-        border: none;
-        border-radius: 8px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .btn-primary {
-        background: #13b35e;
-        color: white;
-    }
-
-        .btn-primary:hover {
-            background: #0ea54a;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(19, 179, 94, 0.3);
-        }
-
-    .btn-outline {
-        background: transparent;
-        color: #13b35e;
-        border: 2px solid #13b35e;
-    }
-
-        .btn-outline:hover {
-            background: #13b35e;
-            color: white;
-        }
-
-    .btn-success {
-        background: #10B981;
-        color: white;
-    }
-
-        .btn-success:hover {
-            background: #059669;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-        }
-
-    .notification {
-        position: fixed;
-        top: 80px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: white;
-        border-radius: 8px;
-        padding: 1rem 1.5rem;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        z-index: 3000;
-        display: none;
-    }
-
-        .notification.success {
-            border-right: 4px solid #10B981;
-        }
-
-        .notification.warning {
-            border-right: 4px solid #F59E0B;
-        }
-
-    .empty-state {
-        text-align: center;
-        color: #666;
-        padding: 3rem;
-    }
-
-        .empty-state h4 {
-            margin-bottom: 1rem;
-            color: #2d3748;
-        }
-
-        .empty-state p {
-            margin-bottom: 2rem;
-            color: #718096;
-        }
-
-    @@media (max-width: 768px) {
-        .form-row {
-            grid-template-columns: 1fr;
-        }
-
-        .main {
-            padding: 1rem;
-        }
-
-        .page-header h1 {
-            font-size: 2rem;
-        }
-    }
-</style>
-<main class="main container-fluid">
-    <div class="page-header text-center mb-5">
+<main class="profile-main container-fluid profile-page">
+    <div class="profile-header text-center mb-5">
         <h1 class="mb-3">البيانات الشخصية</h1>
         <p>يمكنك مراجعة وتحديث بياناتك الشخصية من هنا</p>
     </div>
 
     <div id="profileContent">
-        <div class="tracking-section">
+        <div class="profile-section">
             <h3 class="mb-3">المعلومات الأساسية</h3>
             <form id="profileForm">
-                <div class="form-row">
-                    <div class="form-group">
+                <div class="profile-form-row">
+                    <div class="profile-form-group">
                         <label for="profileName">الاسم الكامل:</label>
                         <input type="text" id="profileName" readonly class="form-control" />
                     </div>
-                    <div class="form-group">
+                    <div class="profile-form-group">
                         <label for="profileEmail">البريد الإلكتروني:</label>
                         <input type="email" id="profileEmail" readonly class="form-control" />
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
+                <div class="profile-form-row">
+                    <div class="profile-form-group">
                         <label for="profileStudentId">الرقم الجامعي:</label>
                         <input type="text" id="profileStudentId" readonly class="form-control" />
                     </div>
-                    <div class="form-group">
+                    <div class="profile-form-group">
                         <label for="profilePhone">رقم الهاتف:</label>
                         <input type="tel" id="profilePhone" class="form-control" />
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
+                <div class="profile-form-row">
+                    <div class="profile-form-group">
                         <label for="profileCollege">الكلية:</label>
                         <input type="text" id="profileCollege" readonly class="form-control" />
                     </div>
-                    <div class="form-group">
+                    <div class="profile-form-group">
                         <label for="profileDepartment">القسم:</label>
                         <input type="text" id="profileDepartment" readonly class="form-control" />
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="profile-form-group">
                     <label for="profileLevel">المستوى الدراسي:</label>
                     <input type="text" id="profileLevel" readonly class="form-control" />
                 </div>
                 <div class="d-flex gap-3 mt-3">
-                    <button type="button" class="btn btn-primary" onclick="enableProfileEdit()">تعديل البيانات</button>
-                    <button type="submit" class="btn btn-success" id="saveProfileBtn" style="display: none;">حفظ التغييرات</button>
-                    <button type="button" class="btn btn-outline" onclick="cancelProfileEdit()" id="cancelProfileBtn" style="display: none;">إلغاء</button>
+                    <button type="button" class="profile-btn profile-btn-primary" onclick="enableProfileEdit()">تعديل البيانات</button>
+                    <button type="submit" class="profile-btn profile-btn-success" id="saveProfileBtn" style="display: none;">حفظ التغييرات</button>
+                    <button type="button" class="profile-btn profile-btn-outline" onclick="cancelProfileEdit()" id="cancelProfileBtn" style="display: none;">إلغاء</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div id="profileLoginRequired" class="empty-state" style="display: none;">
+    <div id="profileLoginRequired" class="profile-empty-state" style="display: none;">
         <h4>يجب تسجيل الدخول</h4>
         <p>للوصول إلى البيانات الشخصية، يجب تسجيل الدخول أولاً</p>
-        <button class="btn btn-primary" onclick="showLoginMessage()">تسجيل الدخول مطلوب</button>
+        <button class="profile-btn profile-btn-primary" onclick="showLoginMessage()">تسجيل الدخول مطلوب</button>
     </div>
 
     <!-- Notification -->
-    <div id="notification" class="notification">
+    <div id="notification" class="profile-notification">
         <span id="notificationText"></span>
     </div>
 </main>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-qn4qBr2Fn59+YfKjpuQY9NKkz4aEIfUEoIR4BY81wC6FiSG+7Mf+TXH3vPVEA3fg" crossorigin="anonymous"></script>
 
