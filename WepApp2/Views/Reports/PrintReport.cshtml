@@ -1,114 +1,28 @@
 ﻿@model List<WepApp2.Models.DeviceReportViewModel>
-
 @{
     Layout = null;
     var title = ViewBag.ReportTitle ?? "تقرير";
     var from = ViewBag.FromDate;
     var to = ViewBag.ToDate;
 }
-
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
     <meta charset="utf-8" />
     <title>@title</title>
-    <style>
-        body {
-            font-family: 'Tajawal', sans-serif;
-            margin: 40px;
-            color: #333;
-        }
-
-        h2, h4 {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .report-meta {
-            text-align: center;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            direction: rtl;
-        }
-
-        th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #eaf5ea;
-        }
-
-        .badge {
-            padding: 4px 10px;
-            border-radius: 6px;
-            color: white;
-            font-size: 13px;
-        }
-
-        .status-تشغيل {
-            background-color: #28a745;
-        }
-
-        .status-صيانة {
-            background-color: #ffc107;
-            color: #000;
-        }
-
-        .status-خارج-الخدمة {
-            background-color: #dc3545;
-        }
-
-        .footer {
-            margin-top: 30px;
-            font-size: 12px;
-            text-align: center;
-            color: gray;
-        }
-
-        .print-button {
-            display: block;
-            margin: 30px auto 10px;
-            padding: 10px 20px;
-            background-color: #198754;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-            .print-button:hover {
-                background-color: #146c43;
-            }
-
-        media print {
-            .print-button
-
-        {
-            display: none;
-        }
-
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/reports-styles.css" />
 </head>
-<body>
-    <h2>@title</h2>
-    <div class="report-meta">
+<body class="printreport-body">
+    <h2 class="printreport-main-title">@title</h2>
+    <div class="printreport-meta-info">
         <div>تاريخ التغطية: @from إلى @to</div>
         <div>التقرير من نوع: @ViewBag.ReportType</div>
     </div>
 
-    <h4 style="text-align:right; margin-bottom:10px;">تقرير الأجهزة</h4>
+    <h4 class="printreport-sub-title">تقرير الأجهزة</h4>
 
-    <table>
+    <table class="printreport-table">
         <thead>
             <tr>
                 <th>الرقم</th>
@@ -125,28 +39,28 @@
                     <td>@item.DeviceName</td>
                     <td>@item.DeviceType</td>
                     <td>
-                        <span class="badge status-@item.Status.Replace(" ", "-")">@item.Status</span>
+                        @{
+                            string statusClass = item.Status switch
+                            {
+                                "تشغيل" => "printreport-status-active",
+                                "صيانة" => "printreport-status-maintenance",
+                                "خارج الخدمة" => "printreport-status-inactive",
+                                _ => "printreport-status-badge"
+                            };
+                        }
+                        <span class="printreport-status-badge @statusClass">@item.Status</span>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 
-    <button class="print-button" onclick="this.style.display='none'; window.print();">🖨 طباعة التقرير</button>
+    <button class="printreport-print-button" onclick="this.style.display='none'; window.print();">
+        🖨 طباعة التقرير
+    </button>
 
-    <style>
-        media print {
-            .print-button
-
-        {
-            display: none;
-        }
-
-        }
-    </style>
-
-    <div class="footer">
-        تم إنشاء هذا التقرير بواسطة بوابة تقنيات الابتكار - @DateTime.Now.Year
+    <div class="printreport-footer">
+        تم إنشاء هذا التقرير بواسطة بوابة معمل الابتكارات - @DateTime.Now.Year
     </div>
 </body>
 </html>

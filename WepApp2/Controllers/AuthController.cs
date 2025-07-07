@@ -74,8 +74,9 @@ namespace WepApp2.Controllers
 
             if (ModelState.IsValid)
             {
-                user.UserId = new Random().Next(1000, 9999);
-                user.LastLogIn = DateTime.Now;
+                // 🟢 الحل البديل: توليد رقم جديد يدويًا
+                int maxId = _context.Users.Any() ? _context.Users.Max(u => u.UserId) : 0;
+              user.LastLogIn = DateTime.Now;
                 user.IsActive = true;
                 _context.Users.Add(user);
                 _context.SaveChanges();

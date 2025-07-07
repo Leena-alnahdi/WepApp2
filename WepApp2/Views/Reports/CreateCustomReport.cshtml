@@ -4,41 +4,21 @@
 }
 
 @section Styles {
-    <style>
-        .custom-report-container {
-            max-width: 900px;
-            margin: auto;
-            padding: 30px;
-            background: #fff;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .section-title {
-            font-weight: bold;
-            font-size: 24px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .form-check {
-            margin-bottom: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="~/css/reports-styles.css" />
 }
 
-<div class="custom-report-container mt-5">
-    <h2 class="section-title">إنشاء تقرير مخصص</h2>
+<div class="customreport-main-container mt-5">
+    <h2 class="customreport-section-title">إنشاء تقرير مخصص</h2>
 
     <form method="post" asp-action="GenerateCustomReport" asp-controller="Reports">
         <div class="mb-3">
-            <label class="form-label fw-bold">عنوان التقرير</label>
+            <label class="form-label customreport-form-label">عنوان التقرير</label>
             <input type="text" name="ReportTitle" class="form-control" placeholder="تقرير" required />
         </div>
 
         <div class="mb-3">
-            <label class="form-label fw-bold">نوع التقرير</label>
-            <select name="ReportType" class="form-select" id="reportTypeSelect" onchange="toggleFields()" required>
+            <label class="form-label customreport-form-label">نوع التقرير</label>
+            <select name="ReportType" class="form-select" id="customReportTypeSelect" onchange="toggleCustomReportFields()" required>
                 <option value="">-- اختر نوع التقرير --</option>
                 <option value="Users">تقرير المستخدمين</option>
                 <option value="Devices">تقرير الأجهزة</option>
@@ -49,33 +29,35 @@
 
         <div class="row">
             <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">من تاريخ</label>
+                <label class="form-label customreport-form-label">من تاريخ</label>
                 <input type="date" name="FromDate" class="form-control" required />
             </div>
             <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">إلى تاريخ</label>
+                <label class="form-label customreport-form-label">إلى تاريخ</label>
                 <input type="date" name="ToDate" class="form-control" required />
             </div>
         </div>
 
-        <!-- هنا العنوان خارج حاوية الحقول -->
-        <div class="mt-4">
-            <label class="form-label fw-bold d-block mb-2">الحقول المطلوبة</label>
-            <div id="fieldsContainer">
-                <!-- سيتم تعبئة هذه الحقول جافا سكريبت -->
+        <div class="mt-4 customreport-fields-wrapper">
+            <label class="form-label customreport-form-label d-block mb-2">الحقول المطلوبة</label>
+            <div id="selectAllContainer"></div>
+            <div id="customReportFieldsContainer" class="customreport-fields-container">
+                <!-- سيتم تعبئة هذه الحقول بواسطة JavaScript -->
             </div>
         </div>
 
-        <div class="d-flex justify-content-center gap-3 mt-4">
-            <button type="submit" class="btn btn-success px-4">إنشاء التقرير</button>
-            <a asp-controller="Reports" asp-action="AllReports" class="btn btn-outline-secondary px-4">العودة</a>
+        <div class="text-center">
+            <div class="customreport-action-buttons">
+                <button type="submit" class="btn btn-success">إنشاء التقرير</button>
+                <a asp-controller="Reports" asp-action="AllReports" class="btn btn-outline-secondary">العودة</a>
+            </div>
         </div>
     </form>
 </div>
 
 @section Scripts {
     <script>
-        const fields = {
+        const customReportFields = {
             Users: [
                 "الاسم",
                 "اسم المستخدم",
@@ -111,21 +93,38 @@
             ]
         };
 
-        function toggleFields() {
-            const type = document.getElementById("reportTypeSelect").value;
-            const container = document.getElementById("fieldsContainer");
+        function toggleCustomReportFields() {
+            const type = document.getElementById("customReportTypeSelect").value;
+            const container = document.getElementById("customReportFieldsContainer");
             container.innerHTML = "";
 
-            if (fields[type]) {
-                fields[type].forEach((field, index) => {
-                    const checkboxId = `field_${index}`;
+            if (customReportFields[type]) {
+                // Add animation to fields appearance
+                container.style.opacity = "0";
+
+                customReportFields[type].forEach((field, index) => {
+                    const checkboxId = `customReportField_${index}`;
                     container.innerHTML += `
-                        <div class="form-check">
+                        <div class="customreport-form-check">
                             <input class="form-check-input" type="checkbox" name="SelectedFields" value="${field}" id="${checkboxId}" checked>
                             <label class="form-check-label" for="${checkboxId}">${field}</label>
                         </div>`;
                 });
+
+                // Fade in animation
+                setTimeout(() => {
+                    container.style.transition = "opacity 0.3s ease-in";
+                    container.style.opacity = "1";
+                }, 100);
             }
         }
+
+        // Initialize on page load if a type is already selected
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectedType = document.getElementById("customReportTypeSelect").value;
+            if (selectedType) {
+                toggleCustomReportFields();
+            }
+        });
     </script>
 }
