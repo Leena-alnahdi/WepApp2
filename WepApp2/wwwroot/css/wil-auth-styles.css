@@ -1,0 +1,571 @@
+﻿
+
+/* CSS Variables for consistent theming */
+:root {
+    --wil-primary-color: #38a169;
+    --wil-primary-dark: #2d8a57;
+    --wil-primary-darker: #1e5f3a;
+    --wil-secondary-color: #6c757d;
+    --wil-success-color: #10b981;
+    --wil-success-dark: #059669;
+    --wil-danger-color: #dc3545;
+    --wil-danger-dark: #c82333;
+    --wil-light-bg: #f8f9fa;
+    --wil-border-color: #e9ecef;
+    --wil-text-muted: #adb5bd;
+    --wil-text-dark: #2c3e50;
+    --wil-white: #ffffff;
+    --wil-shadow-light: rgba(0,0,0,0.1);
+    --wil-shadow-medium: rgba(0,0,0,0.3);
+    --wil-shadow-heavy: rgba(0,0,0,0.4);
+    --wil-font-family: 'Tajawal', sans-serif;
+    --wil-border-radius: 12px;
+    --wil-border-radius-lg: 25px;
+    --wil-transition: all 0.3s ease;
+}
+
+/* ====================================== */
+/* Base Styles */
+/* ====================================== */
+
+.wil-auth-page * {
+    direction: rtl;
+    text-align: right;
+}
+
+.wil-auth-page {
+    background: linear-gradient(135deg, var(--wil-primary-color) 0%, var(--wil-primary-dark) 50%, var(--wil-primary-darker) 100%);
+    font-family: var(--wil-font-family);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* ====================================== */
+/* Header and Logo Styles */
+/* ====================================== */
+
+.wil-auth-header {
+    text-align: center;
+    color: var(--wil-white);
+    margin-bottom: 30px;
+    text-shadow: 0 2px 4px var(--wil-shadow-medium);
+    animation: wil-fadeIn 0.8s ease-out;
+}
+
+.wil-logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.wil-logo {
+    max-width: 200px;
+    max-height: 120px;
+    width: auto;
+    height: auto;
+    filter: drop-shadow(0 4px 8px var(--wil-shadow-medium));
+    transition: var(--wil-transition);
+}
+
+    .wil-logo:hover {
+        transform: scale(1.05);
+        filter: drop-shadow(0 6px 12px var(--wil-shadow-heavy));
+    }
+
+.wil-auth-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.wil-auth-header h2 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.wil-auth-header h6 {
+    font-size: 1rem;
+    font-weight: 300;
+    opacity: 0.9;
+}
+
+/* ====================================== */
+/* Authentication Box */
+/* ====================================== */
+
+.wil-auth-box {
+    background: rgba(255, 255, 255, 0.98);
+    padding: 50px 40px;
+    border-radius: var(--wil-border-radius-lg);
+    box-shadow: 0 15px 35px var(--wil-shadow-medium);
+    max-width: 520px;
+    margin: 0 auto;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: wil-slideUp 0.6s ease-out;
+}
+
+.wil-auth-box--register {
+    max-width: 700px;
+}
+
+/* ====================================== */
+/* Navigation Tabs */
+/* ====================================== */
+
+.wil-nav-tabs {
+    border: none;
+    background: var(--wil-light-bg);
+    border-radius: 15px;
+    padding: 8px;
+    margin-bottom: 30px;
+    box-shadow: inset 0 2px 5px var(--wil-shadow-light);
+}
+
+.wil-nav-link {
+    border: none !important;
+    background: transparent !important;
+    color: var(--wil-secondary-color) !important;
+    font-weight: 500;
+    padding: 12px 25px;
+    border-radius: var(--wil-border-radius);
+    transition: var(--wil-transition);
+    text-decoration: none;
+    margin: 0 3px;
+}
+
+.wil-nav-link--active {
+    background: var(--wil-primary-color) !important;
+    color: var(--wil-white) !important;
+    box-shadow: 0 3px 8px rgba(56, 161, 105, 0.3);
+    transform: translateY(-1px);
+}
+
+.wil-nav-link:hover:not(.wil-nav-link--active) {
+    background: rgba(56, 161, 105, 0.1) !important;
+    color: var(--wil-primary-color) !important;
+}
+
+/* ====================================== */
+/* Form Elements */
+/* ====================================== */
+
+.wil-form-label {
+    font-weight: 500;
+    color: var(--wil-text-dark);
+    margin-bottom: 8px;
+    display: block;
+    text-align: right;
+}
+
+.wil-form-control {
+    border: 2px solid var(--wil-border-color) !important;
+    border-radius: var(--wil-border-radius) !important;
+    padding: 12px 16px !important;
+    font-size: 16px !important;
+    transition: var(--wil-transition) !important;
+    background: var(--wil-light-bg) !important;
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+    .wil-form-control:focus {
+        border-color: var(--wil-primary-color) !important;
+        box-shadow: 0 0 0 0.2rem rgba(56, 161, 105, 0.25) !important;
+        background: var(--wil-white) !important;
+    }
+
+    .wil-form-control::placeholder {
+        color: var(--wil-text-muted) !important;
+        text-align: right !important;
+    }
+
+.wil-form-select {
+    border: 2px solid var(--wil-border-color) !important;
+    border-radius: var(--wil-border-radius) !important;
+    padding: 12px 16px !important;
+    font-size: 16px !important;
+    transition: var(--wil-transition) !important;
+    background: var(--wil-light-bg) !important;
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+    .wil-form-select:focus {
+        border-color: var(--wil-primary-color) !important;
+        box-shadow: 0 0 0 0.2rem rgba(56, 161, 105, 0.25) !important;
+        background: var(--wil-white) !important;
+    }
+
+.wil-form-check {
+    text-align: right;
+    margin-bottom: 25px;
+}
+
+.wil-form-check-input {
+    margin-left: 0 !important;
+    margin-right: 0.5rem !important;
+    float: right !important;
+}
+
+.wil-form-check-label {
+    color: var(--wil-secondary-color);
+    font-weight: 400;
+}
+
+.wil-form-text {
+    color: var(--wil-secondary-color);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    text-align: right;
+}
+
+/* ====================================== */
+/* Button Styles */
+/* ====================================== */
+
+.wil-btn-primary {
+    background: linear-gradient(45deg, var(--wil-primary-color), var(--wil-primary-dark)) !important;
+    border: none !important;
+    color: var(--wil-white) !important;
+    padding: 14px 30px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    border-radius: var(--wil-border-radius) !important;
+    width: 100% !important;
+    transition: var(--wil-transition) !important;
+    box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+    .wil-btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .wil-btn-primary:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(56, 161, 105, 0.4) !important;
+        background: linear-gradient(45deg, var(--wil-primary-dark), var(--wil-primary-darker)) !important;
+    }
+
+        .wil-btn-primary:hover::before {
+            left: 100%;
+        }
+
+    .wil-btn-primary:active {
+        transform: translateY(0) !important;
+    }
+
+    .wil-btn-primary:disabled {
+        background: #cccccc !important;
+        cursor: not-allowed !important;
+        opacity: 0.6 !important;
+        box-shadow: none !important;
+    }
+
+        .wil-btn-primary:disabled:hover {
+            transform: none !important;
+            box-shadow: none !important;
+            background: #cccccc !important;
+        }
+
+        .wil-btn-primary:disabled::before {
+            display: none;
+        }
+
+.wil-btn-primary--loading {
+    position: relative;
+    color: transparent !important;
+}
+
+    .wil-btn-primary--loading::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: 50%;
+        left: 50%;
+        margin: -10px 0 0 -10px;
+        border: 3px solid var(--wil-white);
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: wil-spinner 0.6s linear infinite;
+    }
+
+.wil-btn-outline {
+    border: 2px solid var(--wil-secondary-color) !important;
+    color: var(--wil-secondary-color) !important;
+    background: transparent !important;
+    padding: 12px 25px !important;
+    font-weight: 500 !important;
+    border-radius: var(--wil-border-radius) !important;
+    transition: var(--wil-transition) !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+}
+
+    .wil-btn-outline:hover {
+        background: var(--wil-secondary-color) !important;
+        color: var(--wil-white) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3) !important;
+    }
+
+/* ====================================== */
+/* Alert Styles */
+/* ====================================== */
+
+.wil-alert {
+    border-radius: var(--wil-border-radius) !important;
+    border: none !important;
+    text-align: right !important;
+    font-weight: 500 !important;
+    margin-bottom: 25px !important;
+}
+
+.wil-alert--success {
+    background: linear-gradient(45deg, var(--wil-success-color), var(--wil-success-dark)) !important;
+    color: var(--wil-white) !important;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+}
+
+.wil-alert--danger {
+    background: linear-gradient(45deg, var(--wil-danger-color), var(--wil-danger-dark)) !important;
+    color: var(--wil-white) !important;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3) !important;
+}
+
+.wil-alert--warning {
+    background: linear-gradient(45deg, #ffc107, #e0a800) !important;
+    color: var(--wil-white) !important;
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3) !important;
+}
+
+/* ====================================== */
+/* Link Styles */
+/* ====================================== */
+
+.wil-link {
+    color: var(--wil-primary-color) !important;
+    text-decoration: none !important;
+    transition: var(--wil-transition) !important;
+}
+
+    .wil-link:hover {
+        color: var(--wil-primary-dark) !important;
+        text-decoration: underline !important;
+    }
+
+.wil-link--forgot-password {
+    color: var(--wil-primary-color) !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+    transition: var(--wil-transition) !important;
+    text-align: center !important;
+    display: block !important;
+    margin-top: 20px !important;
+}
+
+.wil-link--back {
+    color: var(--wil-primary-color) !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+    transition: var(--wil-transition) !important;
+    text-align: center !important;
+    display: block !important;
+    font-size: 16px !important;
+}
+
+/* ====================================== */
+/* Reset Password Specific Styles */
+/* ====================================== */
+
+.wil-reset-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.wil-reset-icon {
+    width: 90px;
+    height: 90px;
+    background: linear-gradient(45deg, var(--wil-primary-color), var(--wil-primary-dark));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2.5rem;
+    color: var(--wil-white);
+    box-shadow: 0 10px 40px rgba(56, 161, 105, 0.4);
+    animation: wil-pulse 2s ease-in-out infinite;
+}
+
+.wil-reset-header h3 {
+    color: var(--wil-primary-color);
+    margin-bottom: 0.75rem;
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.wil-reset-header p {
+    color: #666;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+/* ====================================== */
+/* Utility Classes */
+/* ====================================== */
+
+.wil-mb-3 {
+    margin-bottom: 20px !important;
+}
+
+.wil-text-center {
+    text-align: center !important;
+}
+
+.wil-text-right {
+    text-align: right !important;
+}
+
+.wil-d-flex {
+    display: flex !important;
+}
+
+.wil-flex-fill {
+    flex: 1 1 auto !important;
+}
+
+.wil-w-100 {
+    width: 100% !important;
+}
+
+/* ====================================== */
+/* Icon Styles */
+/* ====================================== */
+
+.wil-icon-spacing {
+    margin-left: 8px;
+}
+
+.wil-icon-spacing-sm {
+    margin-left: 4px;
+}
+
+/* ====================================== */
+/* Animations */
+/* ====================================== */
+
+@keyframes wil-slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes wil-fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes wil-pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 10px 40px rgba(56, 161, 105, 0.4);
+    }
+
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 15px 50px rgba(56, 161, 105, 0.5);
+    }
+}
+
+@keyframes wil-spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ====================================== */
+/* Responsive Design */
+/* ====================================== */
+
+@media (max-width: 576px) {
+    .wil-auth-box {
+        margin: 20px;
+        padding: 30px 25px;
+    }
+
+    .wil-auth-box--register {
+        margin: 20px;
+        padding: 30px 25px;
+    }
+
+    .wil-logo {
+        max-width: 150px;
+        max-height: 90px;
+    }
+
+    .wil-nav-link {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    .wil-reset-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 2rem;
+    }
+
+    .wil-reset-header h3 {
+        font-size: 1.5rem;
+    }
+
+    .wil-reset-header p {
+        font-size: 1rem;
+    }
+
+    .wil-auth-header h1 {
+        font-size: 2rem;
+    }
+
+    .wil-auth-header h2 {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .wil-auth-box {
+        max-width: 90%;
+    }
+
+    .wil-auth-box--register {
+        max-width: 90%;
+    }
+}

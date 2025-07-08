@@ -1,4 +1,5 @@
-﻿@model WepApp2.Models.User
+﻿
+@model WepApp2.Models.User
 @{
     Layout = null;
     ViewData["Title"] = "تسجيل الدخول - معمل الابتكارات";
@@ -13,311 +14,39 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            direction: rtl;
-            text-align: right;
-        }
-
-        body {
-            background: linear-gradient(135deg, #38a169 0%, #2d8a57 50%, #1e5f3a 100%);
-            font-family: 'Tajawal', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .header-title {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .logo-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .logo {
-            max-width: 200px;
-            max-height: 120px;
-            width: auto;
-            height: auto;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-            transition: all 0.3s ease;
-        }
-
-            .logo:hover {
-                transform: scale(1.05);
-                filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4));
-            }
-
-        .header-title h6 {
-            font-size: 1rem;
-            font-weight: 300;
-            opacity: 0.9;
-        }
-
-        .auth-box {
-            background: rgba(255, 255, 255, 0.98);
-            padding: 50px 40px;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-            max-width: 520px;
-            margin: 0 auto;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .nav-tabs-custom {
-            border: none;
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 8px;
-            margin-bottom: 30px;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-            .nav-tabs-custom .nav-link {
-                border: none;
-                background: transparent;
-                color: #6c757d;
-                font-weight: 500;
-                padding: 12px 25px;
-                border-radius: 12px;
-                transition: all 0.3s ease;
-                text-decoration: none;
-                margin: 0 3px;
-            }
-
-                .nav-tabs-custom .nav-link.active {
-                    background: #38a169;
-                    color: white;
-                    box-shadow: 0 3px 8px rgba(56, 161, 105, 0.3);
-                    transform: translateY(-1px);
-                }
-
-                .nav-tabs-custom .nav-link:hover:not(.active) {
-                    background: rgba(56, 161, 105, 0.1);
-                    color: #38a169;
-                }
-
-        .form-label {
-            font-weight: 500;
-            color: #2c3e50;
-            margin-bottom: 8px;
-            display: block;
-            text-align: right;
-        }
-
-        .form-control {
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            padding: 12px 16px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: #f8f9fa;
-            text-align: right;
-            direction: rtl;
-        }
-
-            .form-control:focus {
-                border-color: #38a169;
-                box-shadow: 0 0 0 0.2rem rgba(56, 161, 105, 0.25);
-                background: white;
-            }
-
-            .form-control::placeholder {
-                color: #adb5bd;
-                text-align: right;
-            }
-
-        .form-check {
-            text-align: right;
-            margin-bottom: 25px;
-        }
-
-        .form-check-input {
-            margin-left: 0;
-            margin-right: 0.5rem;
-            float: right;
-        }
-
-        .form-check-label {
-            color: #6c757d;
-            font-weight: 400;
-        }
-
-        .btn-login {
-            background: linear-gradient(45deg, #38a169, #2d8a57);
-            border: none;
-            color: white;
-            padding: 14px 30px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 12px;
-            width: 100%;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-
-            .btn-login::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
-                transition: left 0.5s ease;
-            }
-
-            .btn-login:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(56, 161, 105, 0.4);
-                background: linear-gradient(45deg, #2d8a57, #1e5f3a);
-            }
-
-                .btn-login:hover::before {
-                    left: 100%;
-                }
-
-            .btn-login:active {
-                transform: translateY(0);
-            }
-
-        .forgot-password {
-            color: #38a169;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            text-align: center;
-            display: block;
-            margin-top: 20px;
-        }
-
-            .forgot-password:hover {
-                color: #2d8a57;
-                text-decoration: underline;
-            }
-
-        .alert {
-            border-radius: 12px;
-            border: none;
-            text-align: right;
-            font-weight: 500;
-            margin-bottom: 25px;
-        }
-
-        .alert-danger {
-            background: linear-gradient(45deg, #dc3545, #c82333);
-            color: white;
-            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
-        }
-
-        .alert-success {
-            background: linear-gradient(45deg, #10b981, #059669);
-            color: white;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-        }
-
-        .mb-3 {
-            margin-bottom: 20px;
-        }
-
-        @@media (max-width: 576px) {
-            .auth-box {
-                margin: 20px;
-                padding: 30px 25px;
-            }
-
-            .logo {
-                max-width: 150px;
-                max-height: 90px;
-            }
-
-            .nav-tabs-custom .nav-link {
-                padding: 10px 15px;
-                font-size: 14px;
-            }
-        }
-
-        /* تحسين الأيقونات */
-        .fa-sign-in-alt {
-            margin-left: 8px;
-        }
-
-        /* تأثير الحركة للصفحة */
-        .auth-box {
-            animation: slideUp 0.6s ease-out;
-        }
-
-        @@keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .header-title {
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        @@keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
+    <link href="~/css/wil-auth-styles.css" rel="stylesheet" />
 </head>
-<body>
+<body class="wil-auth-page">
     <div class="container">
-        <div class="header-title">
-            <div class="logo-container">
-                <img src="~/Images/logo.png" alt="شعار معمل الابتكارات" class="logo" />
+        <div class="wil-auth-header">
+            <div class="wil-logo-container">
+                <img src="~/Images/logo.png" alt="شعار معمل الابتكارات" class="wil-logo" />
             </div>
         </div>
 
-        <div class="auth-box">
-            <div class="nav-tabs-custom d-flex">
-                <a href="/Auth/Index" class="nav-link active flex-fill text-center">
-                    <i class="fas fa-sign-in-alt me-2"></i>
+        <div class="wil-auth-box">
+            <div class="wil-nav-tabs wil-d-flex">
+                <a href="/Auth/Index" class="wil-nav-link wil-nav-link--active wil-flex-fill wil-text-center">
+                    <i class="fas fa-sign-in-alt wil-icon-spacing-sm"></i>
                     تسجيل الدخول
                 </a>
-                <a href="/Auth/Register" class="nav-link flex-fill text-center">
-                    <i class="fas fa-user-plus me-2"></i>
+                <a href="/Auth/Register" class="wil-nav-link wil-flex-fill wil-text-center">
+                    <i class="fas fa-user-plus wil-icon-spacing-sm"></i>
                     إنشاء حساب
                 </a>
             </div>
 
             @if (loginFailed)
             {
-                <div class="alert alert-danger">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
+                <div class="wil-alert wil-alert--danger">
+                    <i class="fas fa-exclamation-triangle wil-icon-spacing-sm"></i>
                     اسم المستخدم أو كلمة المرور غير صحيحة.
                 </div>
             }
 
             <!-- Success message for password reset -->
-            <div class="alert alert-success" id="resetSuccessAlert" style="display: none;">
-                <i class="fas fa-check-circle me-2"></i>
+            <div class="wil-alert wil-alert--success" id="wil-reset-success-alert" style="display: none;">
+                <i class="fas fa-check-circle wil-icon-spacing-sm"></i>
                 <strong>تم إرسال رابط الاستعادة بنجاح!</strong><br>
                 تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني. يرجى فحص بريدك الإلكتروني واتباع التعليمات.
             </div>
@@ -325,36 +54,36 @@
             <form method="post" asp-action="Login">
                 @Html.AntiForgeryToken()
 
-                <div class="mb-3">
-                    <label asp-for="UserName" class="form-label">
-                        <i class="fas fa-user me-2"></i>
+                <div class="wil-mb-3">
+                    <label asp-for="UserName" class="wil-form-label">
+                        <i class="fas fa-user wil-icon-spacing-sm"></i>
                         اسم المستخدم:
                     </label>
-                    <input asp-for="UserName" class="form-control" placeholder="أدخل اسم المستخدم" />
+                    <input asp-for="UserName" class="form-control wil-form-control" placeholder="أدخل اسم المستخدم" />
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="PassWord" class="form-label">
-                        <i class="fas fa-lock me-2"></i>
+                <div class="wil-mb-3">
+                    <label asp-for="PassWord" class="wil-form-label">
+                        <i class="fas fa-lock wil-icon-spacing-sm"></i>
                         كلمة المرور:
                     </label>
-                    <input asp-for="PassWord" class="form-control" type="password" placeholder="أدخل كلمة المرور" />
+                    <input asp-for="PassWord" class="form-control wil-form-control" type="password" placeholder="أدخل كلمة المرور" />
                 </div>
 
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="rememberMe" />
-                    <label class="form-check-label" for="rememberMe">
+                <div class="wil-form-check">
+                    <input type="checkbox" class="form-check-input wil-form-check-input" id="wil-remember-me" />
+                    <label class="form-check-label wil-form-check-label" for="wil-remember-me">
                         تذكرني
                     </label>
                 </div>
 
-                <button type="submit" class="btn-login">
-                    <i class="fa fa-sign-in-alt"></i>
+                <button type="submit" class="btn wil-btn-primary">
+                    <i class="fa fa-sign-in-alt wil-icon-spacing"></i>
                     تسجيل الدخول
                 </button>
 
-                <a href="/Auth/ForgotPassword" class="forgot-password">
-                    <i class="fas fa-key me-2"></i>
+                <a href="/Auth/ForgotPassword" class="wil-link wil-link--forgot-password">
+                    <i class="fas fa-key wil-icon-spacing-sm"></i>
                     نسيت كلمة المرور؟
                 </a>
             </form>
@@ -362,20 +91,20 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Check for reset success message
             const urlParams = new URLSearchParams(window.location.search);
             const resetSuccess = urlParams.get('resetSuccess');
 
             if (resetSuccess === 'true') {
-                const successAlert = document.getElementById('resetSuccessAlert');
+                const successAlert = document.getElementById('wil-reset-success-alert');
                 successAlert.style.display = 'block';
 
                 // Auto-hide success message after 8 seconds
-                setTimeout(() => {
+                setTimeout(function () {
                     successAlert.style.opacity = '0';
                     successAlert.style.transform = 'translateY(-20px)';
-                    setTimeout(() => {
+                    setTimeout(function () {
                         successAlert.style.display = 'none';
                     }, 300);
                 }, 8000);
@@ -383,7 +112,7 @@
                 // Clean up URL
                 if (window.history && window.history.pushState) {
                     const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-                    window.history.pushState({path: newUrl}, '', newUrl);
+                    window.history.pushState({ path: newUrl }, '', newUrl);
                 }
             }
         });
