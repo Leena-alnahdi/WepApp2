@@ -13,7 +13,7 @@ namespace WepApp2.Controllers
         {
             _context = context;
         }
-        
+
         // GET: Login
         [HttpGet]
         public IActionResult Login()
@@ -76,7 +76,7 @@ namespace WepApp2.Controllers
             {
                 // 🟢 الحل البديل: توليد رقم جديد يدويًا
                 int maxId = _context.Users.Any() ? _context.Users.Max(u => u.UserId) : 0;
-              user.LastLogIn = DateTime.Now;
+                user.LastLogIn = DateTime.Now;
                 user.IsActive = true;
                 _context.Users.Add(user);
                 _context.SaveChanges();
