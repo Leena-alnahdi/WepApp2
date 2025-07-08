@@ -5,7 +5,7 @@ namespace WepApp2.Models;
 
 public partial class BookingDevice
 {
-    public int BookingDevices { get; set; }
+    public int BookingDeviceId { get; set; }
 
     public string ProjectName { get; set; } = null!;
 

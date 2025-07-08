@@ -5,11 +5,9 @@ namespace WepApp2.Models;
 
 public partial class VisitsDetail
 {
-    public int VisitsDetailsId { get; set; }
+    public int VisitDetailsId { get; set; }
 
     public string VisitType { get; set; } = null!;
 
-    public int? LabVisitId { get; set; }
-
-    public virtual LabVisit? LabVisit { get; set; }
+    public virtual ICollection<LabVisit> LabVisits { get; set; } = new List<LabVisit>();
 }

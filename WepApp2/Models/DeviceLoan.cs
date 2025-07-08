@@ -5,7 +5,7 @@ namespace WepApp2.Models;
 
 public partial class DeviceLoan
 {
-    public int LoanId { get; set; }
+    public int DeviceLoanId { get; set; }
 
     public string Purpose { get; set; } = null!;
 

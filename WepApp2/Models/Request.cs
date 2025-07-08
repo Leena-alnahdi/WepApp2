@@ -13,17 +13,17 @@ public partial class Request
 
     public DateTime RequestDate { get; set; }
 
-    public int? UserId { get; set; }
-
-    public int? ServiceId { get; set; }
-
-    public int? DeviceId { get; set; }
-
     public int SupervisorAssigned { get; set; }
 
     public string AdminStatus { get; set; } = null!;
 
     public string Notes { get; set; } = null!;
+
+    public int? UserId { get; set; }
+
+    public int? ServiceId { get; set; }
+
+    public int? DeviceId { get; set; }
 
     public virtual ICollection<BookingDevice> BookingDevices { get; set; } = new List<BookingDevice>();
 

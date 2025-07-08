@@ -9,9 +9,7 @@ public partial class ConsultationMajor
 
     public string Major { get; set; } = null!;
 
-    public string Description { get; set; } = null!;
+    public string ConsultationDescription { get; set; } = null!;
 
-    public int? ConsultationId { get; set; }
-
-    public virtual Consultation? Consultation { get; set; }
+    public virtual ICollection<Consultation> Consultations { get; set; } = new List<Consultation>();
 }

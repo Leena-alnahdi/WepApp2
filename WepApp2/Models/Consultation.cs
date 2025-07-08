@@ -7,19 +7,21 @@ public partial class Consultation
 {
     public int ConsultationId { get; set; }
 
-    public string Description { get; set; } = null!;
+    public string ConsultationDescription { get; set; } = null!;
 
     public DateOnly RequestedDate { get; set; }
 
-    public string? CommunicationMethod { get; set; }
+    public TimeOnly AvailableTimes { get; set; }
+
+    public string? PreferredContactMethod { get; set; }
 
     public int? ServiceId { get; set; }
 
     public int? RequestId { get; set; }
 
-    public TimeOnly AvailableTimes { get; set; }
+    public int ConsultationMajorId { get; set; }
 
-    public virtual ICollection<ConsultationMajor> ConsultationMajors { get; set; } = new List<ConsultationMajor>();
+    public virtual ConsultationMajor ConsultationMajor { get; set; } = null!;
 
     public virtual Request? Request { get; set; }
 

@@ -13,7 +13,7 @@ public partial class LabVisit
 
     public TimeOnly PreferredTime { get; set; }
 
-    public string? CommunicationMethod { get; set; }
+    public string? PreferredContactMethod { get; set; }
 
     public string? AdditionalNotes { get; set; }
 
@@ -21,9 +21,11 @@ public partial class LabVisit
 
     public int? RequestId { get; set; }
 
+    public int? VisitDetailsId { get; set; }
+
     public virtual Request? Request { get; set; }
 
     public virtual Service? Service { get; set; }
 
-    public virtual ICollection<VisitsDetail> VisitsDetails { get; set; } = new List<VisitsDetail>();
+    public virtual VisitsDetail? VisitDetails { get; set; }
 }

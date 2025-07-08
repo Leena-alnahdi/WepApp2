@@ -40,9 +40,8 @@ public partial class Dbgroup2Context : DbContext
     public virtual DbSet<VisitsDetail> VisitsDetails { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlServer("Server=ASMA;Database=DBGroup2;Trusted_Connection=True;TrustServerCertificate=True");
-    }
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=LAPTOP-UBN31PE8;Database=DBGroup2;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -50,9 +49,9 @@ public partial class Dbgroup2Context : DbContext
 
         modelBuilder.Entity<BookingDevice>(entity =>
         {
-            entity.HasKey(e => e.BookingDevices).HasName("PK__BookingD__EDD3255410E4623A");
+            entity.HasKey(e => e.BookingDeviceId).HasName("PK__BookingD__6263A24949EBF196");
 
-            entity.Property(e => e.BookingDevices).ValueGeneratedNever();
+            entity.Property(e => e.BookingDeviceId).HasColumnName("BookingDeviceID");
             entity.Property(e => e.Department).HasMaxLength(255);
             entity.Property(e => e.DeviceId).HasColumnName("DeviceID");
             entity.Property(e => e.Faculty).HasMaxLength(255);
@@ -75,14 +74,18 @@ public partial class Dbgroup2Context : DbContext
 
         modelBuilder.Entity<Consultation>(entity =>
         {
-            entity.HasKey(e => e.ConsultationId).HasName("PK__Consulta__5D014A7847927F7B");
+            entity.HasKey(e => e.ConsultationId).HasName("PK__Consulta__5D014A785DB937CC");
 
-            entity.Property(e => e.ConsultationId)
-                .ValueGeneratedNever()
-                .HasColumnName("ConsultationID");
-            entity.Property(e => e.CommunicationMethod).HasMaxLength(255);
+            entity.Property(e => e.ConsultationId).HasColumnName("ConsultationID");
+            entity.Property(e => e.ConsultationMajorId).HasColumnName("ConsultationMajorID");
+            entity.Property(e => e.PreferredContactMethod).HasMaxLength(255);
             entity.Property(e => e.RequestId).HasColumnName("RequestID");
             entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
+
+            entity.HasOne(d => d.ConsultationMajor).WithMany(p => p.Consultations)
+                .HasForeignKey(d => d.ConsultationMajorId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Consultations_ConsultationMajor");
 
             entity.HasOne(d => d.Request).WithMany(p => p.Consultations)
                 .HasForeignKey(d => d.RequestId)
@@ -95,26 +98,17 @@ public partial class Dbgroup2Context : DbContext
 
         modelBuilder.Entity<ConsultationMajor>(entity =>
         {
-            entity.HasKey(e => e.ConsultationMajorId).HasName("PK__Consulta__C757E54FCA8BDCBC");
+            entity.HasKey(e => e.ConsultationMajorId).HasName("PK__Consulta__C757E54F7E8D3679");
 
-            entity.Property(e => e.ConsultationMajorId)
-                .ValueGeneratedNever()
-                .HasColumnName("ConsultationMajorID");
-            entity.Property(e => e.ConsultationId).HasColumnName("ConsultationID");
+            entity.Property(e => e.ConsultationMajorId).HasColumnName("ConsultationMajorID");
             entity.Property(e => e.Major).HasMaxLength(255);
-
-            entity.HasOne(d => d.Consultation).WithMany(p => p.ConsultationMajors)
-                .HasForeignKey(d => d.ConsultationId)
-                .HasConstraintName("FK_ConsultationMajors_Consultations");
         });
 
         modelBuilder.Entity<Course>(entity =>
         {
-            entity.HasKey(e => e.CourseId).HasName("PK__Courses__C92D718765CDAE24");
+            entity.HasKey(e => e.CourseId).HasName("PK__Courses__C92D7187C09ABD48");
 
-            entity.Property(e => e.CourseId)
-                .ValueGeneratedNever()
-                .HasColumnName("CourseID");
+            entity.Property(e => e.CourseId).HasColumnName("CourseID");
             entity.Property(e => e.CourseField).HasMaxLength(255);
             entity.Property(e => e.CourseName).HasMaxLength(255);
             entity.Property(e => e.PresenterName).HasMaxLength(255);
@@ -132,11 +126,9 @@ public partial class Dbgroup2Context : DbContext
 
         modelBuilder.Entity<Device>(entity =>
         {
-            entity.HasKey(e => e.DeviceId).HasName("PK__Devices__49E123315D92FBB2");
+            entity.HasKey(e => e.DeviceId).HasName("PK__Devices__49E12331FA20AC9E");
 
-            entity.Property(e => e.DeviceId)
-                .ValueGeneratedNever()
-                .HasColumnName("DeviceID");
+            entity.Property(e => e.DeviceId).HasColumnName("DeviceID");
             entity.Property(e => e.BrandName).HasMaxLength(255);
             entity.Property(e => e.DeviceLocation).HasMaxLength(255);
             entity.Property(e => e.DeviceModel).HasMaxLength(255);
@@ -147,19 +139,22 @@ public partial class Dbgroup2Context : DbContext
             entity.Property(e => e.LastUpdate).HasColumnType("datetime");
             entity.Property(e => e.SerialNumber).HasMaxLength(255);
             entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
+            entity.Property(e => e.TechnologyId).HasColumnName("TechnologyID");
 
             entity.HasOne(d => d.Service).WithMany(p => p.Devices)
                 .HasForeignKey(d => d.ServiceId)
                 .HasConstraintName("FK_Devices_Services");
+
+            entity.HasOne(d => d.Technology).WithMany(p => p.Devices)
+                .HasForeignKey(d => d.TechnologyId)
+                .HasConstraintName("FK_Devices_Technologies");
         });
 
         modelBuilder.Entity<DeviceLoan>(entity =>
         {
-            entity.HasKey(e => e.LoanId).HasName("PK__DeviceLo__4F5AD4374F130F35");
+            entity.HasKey(e => e.DeviceLoanId).HasName("PK__DeviceLo__385CB1795F83D7B4");
 
-            entity.Property(e => e.LoanId)
-                .ValueGeneratedNever()
-                .HasColumnName("LoanID");
+            entity.Property(e => e.DeviceLoanId).HasColumnName("DeviceLoanID");
             entity.Property(e => e.DeviceId).HasColumnName("DeviceID");
             entity.Property(e => e.PreferredContactMethod).HasMaxLength(255);
             entity.Property(e => e.RequestId).HasColumnName("RequestID");
@@ -180,15 +175,14 @@ public partial class Dbgroup2Context : DbContext
 
         modelBuilder.Entity<LabVisit>(entity =>
         {
-            entity.HasKey(e => e.LabVisitId).HasName("PK__LabVisit__DDA1234232DDD84C");
+            entity.HasKey(e => e.LabVisitId).HasName("PK__LabVisit__DDA12342C1B18E03");
 
-            entity.Property(e => e.LabVisitId)
-                .ValueGeneratedNever()
-                .HasColumnName("LabVisitID");
-            entity.Property(e => e.CommunicationMethod).HasMaxLength(255);
+            entity.Property(e => e.LabVisitId).HasColumnName("LabVisitID");
             entity.Property(e => e.NumberOfVisitors).HasDefaultValue(1);
+            entity.Property(e => e.PreferredContactMethod).HasMaxLength(255);
             entity.Property(e => e.RequestId).HasColumnName("RequestID");
             entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
+            entity.Property(e => e.VisitDetailsId).HasColumnName("VisitDetailsID");
 
             entity.HasOne(d => d.Request).WithMany(p => p.LabVisits)
                 .HasForeignKey(d => d.RequestId)
@@ -197,17 +191,17 @@ public partial class Dbgroup2Context : DbContext
             entity.HasOne(d => d.Service).WithMany(p => p.LabVisits)
                 .HasForeignKey(d => d.ServiceId)
                 .HasConstraintName("FK_LabVisits_Services");
+
+            entity.HasOne(d => d.VisitDetails).WithMany(p => p.LabVisits)
+                .HasForeignKey(d => d.VisitDetailsId)
+                .HasConstraintName("FK_LabVisits_VisitsDetails");
         });
 
         modelBuilder.Entity<Request>(entity =>
         {
-            entity.HasKey(e => e.RequestId).HasName("PK__Request__33A8519A6244A6D5");
+            entity.HasKey(e => e.RequestId).HasName("PK__Requests__33A8519A677781CF");
 
-            entity.ToTable("Request");
-
-            entity.Property(e => e.RequestId)
-                .ValueGeneratedNever()
-                .HasColumnName("RequestID");
+            entity.Property(e => e.RequestId).HasColumnName("RequestID");
             entity.Property(e => e.AdminStatus).HasMaxLength(255);
             entity.Property(e => e.DeviceId).HasColumnName("DeviceID");
             entity.Property(e => e.RequestDate).HasColumnType("datetime");
@@ -234,14 +228,14 @@ public partial class Dbgroup2Context : DbContext
                     r => r.HasOne<Course>().WithMany()
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__CoursesRe__Cours__6D0D32F4"),
+                        .HasConstraintName("FK__CoursesRe__Cours__5AEE82B9"),
                     l => l.HasOne<Request>().WithMany()
                         .HasForeignKey("RequestId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__CoursesRe__Reque__6C190EBB"),
+                        .HasConstraintName("FK__CoursesRe__Reque__59FA5E80"),
                     j =>
                     {
-                        j.HasKey("RequestId", "CourseId").HasName("PK__CoursesR__5F3A8682B362A6F7");
+                        j.HasKey("RequestId", "CourseId").HasName("PK__CoursesR__5F3A86825A1B9ED2");
                         j.ToTable("CoursesRequests");
                         j.IndexerProperty<int>("RequestId").HasColumnName("RequestID");
                         j.IndexerProperty<int>("CourseId").HasColumnName("CourseID");
@@ -250,41 +244,25 @@ public partial class Dbgroup2Context : DbContext
 
         modelBuilder.Entity<Service>(entity =>
         {
-            entity.HasKey(e => e.ServiceId).HasName("PK__Services__C51BB0EACFB7ECCB");
+            entity.HasKey(e => e.ServiceId).HasName("PK__Services__C51BB0EAB48627A7");
 
-            entity.Property(e => e.ServiceId)
-                .ValueGeneratedNever()
-                .HasColumnName("ServiceID");
+            entity.Property(e => e.ServiceId).HasColumnName("ServiceID");
             entity.Property(e => e.ServiceName).HasMaxLength(255);
-            entity.Property(e => e.TechnologyId).HasColumnName("TechnologyID");
-
-            entity.HasOne(d => d.Technology).WithMany(p => p.Services)
-                .HasForeignKey(d => d.TechnologyId)
-                .HasConstraintName("FK_Services_Technologies");
         });
 
         modelBuilder.Entity<Technology>(entity =>
         {
-            entity.HasKey(e => e.TechnologyId).HasName("PK__Technolo__705701784316E071");
+            entity.HasKey(e => e.TechnologyId).HasName("PK__Technolo__70570178B6095524");
 
-            entity.Property(e => e.TechnologyId)
-                .ValueGeneratedNever()
-                .HasColumnName("TechnologyID");
-            entity.Property(e => e.DeviceId).HasColumnName("DeviceID");
+            entity.Property(e => e.TechnologyId).HasColumnName("TechnologyID");
             entity.Property(e => e.TechnologyName).HasMaxLength(255);
-
-            entity.HasOne(d => d.Device).WithMany(p => p.Technologies)
-                .HasForeignKey(d => d.DeviceId)
-                .HasConstraintName("FK_Technologies_Devices");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCAC48D148C7");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCACFFACBBB8");
 
-            entity.Property(e => e.UserId)
-                .ValueGeneratedNever()
-                .HasColumnName("UserID");
+            entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.Department).HasMaxLength(255);
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.Faculty).HasMaxLength(255);
@@ -292,26 +270,20 @@ public partial class Dbgroup2Context : DbContext
             entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.LastLogIn).HasColumnType("datetime");
             entity.Property(e => e.LastName).HasMaxLength(255);
-            entity.Property(e => e.PassWord).HasMaxLength(255);
-            entity.Property(e => e.Role).HasMaxLength(255);
+            entity.Property(e => e.PhoneNumber).HasMaxLength(255);
             entity.Property(e => e.UserName).HasMaxLength(255);
+            entity.Property(e => e.UserPassWord).HasMaxLength(255);
+            entity.Property(e => e.UserRole).HasMaxLength(255);
         });
 
         modelBuilder.Entity<VisitsDetail>(entity =>
         {
-            entity.HasKey(e => e.VisitsDetailsId).HasName("PK__VisitsDe__746A09CF6F218A8C");
+            entity.HasKey(e => e.VisitDetailsId).HasName("PK__VisitsDe__BCA58B1371E794BB");
 
-            entity.Property(e => e.VisitsDetailsId)
-                .ValueGeneratedNever()
-                .HasColumnName("VisitsDetailsID");
-            entity.Property(e => e.LabVisitId).HasColumnName("LabVisitID");
+            entity.Property(e => e.VisitDetailsId).HasColumnName("VisitDetailsID");
             entity.Property(e => e.VisitType)
                 .HasMaxLength(255)
                 .HasColumnName("visitType");
-
-            entity.HasOne(d => d.LabVisit).WithMany(p => p.VisitsDetails)
-                .HasForeignKey(d => d.LabVisitId)
-                .HasConstraintName("FK_VisitsDetails_LabVisits");
         });
 
         OnModelCreatingPartial(modelBuilder);

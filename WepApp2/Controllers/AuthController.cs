@@ -26,7 +26,7 @@ namespace WepApp2.Controllers
         public IActionResult Login(User user)
         {
             var existingUser = _context.Users
-                .FirstOrDefault(u => u.UserName == user.UserName && u.PassWord == user.PassWord);
+                .FirstOrDefault(u => u.UserName == user.UserName && u.UserPassWord == user.UserPassWord);
 
             if (existingUser != null)
             {
@@ -49,14 +49,14 @@ namespace WepApp2.Controllers
         public IActionResult Register(User user, string ConfirmPassword)
         {
             // التحقق من تطابق كلمتي المرور
-            if (user.PassWord != ConfirmPassword)
+            if (user.UserPassWord != ConfirmPassword)
             {
                 ViewBag.PasswordMismatch = true;
                 return View(user);
             }
 
             // التحقق من أن كلمة المرور ليست فارغة
-            if (string.IsNullOrWhiteSpace(user.PassWord))
+            if (string.IsNullOrWhiteSpace(user.UserPassWord))
             {
                 ViewBag.PasswordEmpty = true;
                 return View(user);

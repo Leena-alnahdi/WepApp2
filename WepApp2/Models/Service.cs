@@ -9,9 +9,7 @@ public partial class Service
 
     public string ServiceName { get; set; } = null!;
 
-    public string Description { get; set; } = null!;
-
-    public int? TechnologyId { get; set; }
+    public string ServiceDescription { get; set; } = null!;
 
     public virtual ICollection<BookingDevice> BookingDevices { get; set; } = new List<BookingDevice>();
 
@@ -26,6 +24,4 @@ public partial class Service
     public virtual ICollection<LabVisit> LabVisits { get; set; } = new List<LabVisit>();
 
     public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
-
-    public virtual Technology? Technology { get; set; }
 }

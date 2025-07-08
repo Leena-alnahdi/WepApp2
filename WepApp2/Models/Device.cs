@@ -21,11 +21,13 @@ public partial class Device
 
     public string DeviceLocation { get; set; } = null!;
 
-    public DateTime LastMaintenance { get; set; }
+    public DateTime? LastMaintenance { get; set; }
 
-    public DateTime LastUpdate { get; set; }
+    public DateTime? LastUpdate { get; set; }
 
     public int? ServiceId { get; set; }
+
+    public int? TechnologyId { get; set; }
 
     public virtual ICollection<BookingDevice> BookingDevices { get; set; } = new List<BookingDevice>();
 
@@ -35,5 +37,5 @@ public partial class Device
 
     public virtual Service? Service { get; set; }
 
-    public virtual ICollection<Technology> Technologies { get; set; } = new List<Technology>();
+    public virtual Technology? Technology { get; set; }
 }

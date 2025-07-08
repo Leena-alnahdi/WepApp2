@@ -9,11 +9,7 @@ public partial class Technology
 
     public string TechnologyName { get; set; } = null!;
 
-    public string Description { get; set; } = null!;
+    public string TechnologyDescription { get; set; } = null!;
 
-    public int? DeviceId { get; set; }
-
-    public virtual Device? Device { get; set; }
-
-    public virtual ICollection<Service> Services { get; set; } = new List<Service>();
+    public virtual ICollection<Device> Devices { get; set; } = new List<Device>();
 }
