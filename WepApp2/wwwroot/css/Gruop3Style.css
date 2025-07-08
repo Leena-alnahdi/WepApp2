@@ -1876,3 +1876,20 @@ canvas {
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(0, 108, 53, 0.3);
     }
+body, html {
+    overflow-x: hidden !important;
+}
+
+main {
+    margin-right: 0 !important;
+}
+
+.container-fluid {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+}
+
+.row {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+}
