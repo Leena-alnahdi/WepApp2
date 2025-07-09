@@ -1,4 +1,7 @@
-﻿@{
+﻿@model List<WepApp2.Models.Request>
+
+
+@{
     ViewBag.Title = "صفحة المشرف";
 }
 
@@ -19,38 +22,21 @@
     </thead>
     <tbody>
         <tr>
-            <td>طابعة ثلاثية الأبعاد</td>
-            <td>إعارة</td>
-            <td>@@techGuru_22</td>
-            <td>2025-06-20</td>
-            <td class="status">في الانتظار</td>
-            <td class="actions">
-                <button class="supervisor-approve-btn btn btn-success">موافقة</button>
-                <button class="supervisor-reject-btn btn btn-danger">رفض</button>
-            </td>
-        </tr>
-        <tr>
-            <td>نظارة الواقع الافتراضي</td>
-            <td>استخدام</td>
-            <td>@@VR_Explorer</td>
-            <td>2025-06-21</td>
-            <td class="status">في الانتظار</td>
-            <td class="actions">
-                <button class="supervisor-approve-btn btn btn-success">موافقة</button>
-                <button class="supervisor-reject-btn btn btn-danger">رفض</button>
-            </td>
-        </tr>
-        <tr>
-            <td>استشارة تقنية</td>
-            <td>استشارة</td>
-            <td>@@CodeMaster_99</td>
-            <td>2025-06-22</td>
-            <td class="status">في الانتظار</td>
-            <td class="actions">
-                <button class="supervisor-approve-btn btn btn-success">موافقة</button>
-                <button class="supervisor-reject-btn btn btn-danger">رفض</button>
-            </td>
-        </tr>
+    <tbody>
+        @foreach (var request in Model)
+        {
+            <tr>
+                <td>—</td>
+                <td>@request.RequestType</td>
+                <td>—</td>
+                <td>@request.RequestDate</td>
+                <td class="status">@request.SupervisorStatus</td>
+                <td class="actions">
+                    <button class="supervisor-approve-btn btn btn-success">موافقة</button>
+                    <button class="supervisor-reject-btn btn btn-danger">رفض</button>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
