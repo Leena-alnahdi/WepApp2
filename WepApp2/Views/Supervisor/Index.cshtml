@@ -1,6 +1,5 @@
 ﻿@model List<WepApp2.Models.Request>
 
-
 @{
     ViewBag.Title = "صفحة المشرف";
 }
@@ -9,36 +8,47 @@
 <link rel="stylesheet" href="~/css/Gruop3Style.css" />
 
 <h2 class="mb-4">إدارة الطلبات</h2>
-<table id="requestsTable" class="table table-hover">
-    <thead>
-        <tr>
-            <th>الطلب</th>
-            <th>نوع الطلب</th>
-            <th>اسم المستخدم</th>
-            <th>التاريخ</th>
-            <th>الحالة</th>
-            <th>الإجراءات</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-    <tbody>
-        @foreach (var request in Model)
-        {
+
+<form id="requestsForm" method="post">
+    @Html.AntiForgeryToken()
+
+    <table id="requestsTable" class="table table-hover">
+        <thead>
             <tr>
-                <td>—</td>
-                <td>@request.RequestType</td>
-                <td>—</td>
-                <td>@request.RequestDate</td>
-                <td class="status">@request.SupervisorStatus</td>
-                <td class="actions">
-                    <button class="supervisor-approve-btn btn btn-success">موافقة</button>
-                    <button class="supervisor-reject-btn btn btn-danger">رفض</button>
-                </td>
+                <th>الطلب</th>
+                <th>نوع الطلب</th>
+                <th>اسم المستخدم</th>
+                <th>التاريخ</th>
+                <th>الحالة</th>
+                <th>الإجراءات</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var request in Model)
+            {
+                <tr>
+                    <td>—</td>
+                    <td>@request.RequestType</td>
+                    <td>@request.User?.UserName</td>
+                    <td>@request.RequestDate.ToString("yyyy-MM-dd")</td>
+                    <td class="status">@request.SupervisorStatus</td>
+                    <td class="actions">
+                        @if (request.SupervisorStatus == "موافق عليه" || request.SupervisorStatus == "مرفوض")
+                        {
+                            <span>تم الإجراء</span>
+                        }
+                        else
+                        {
+                            <button type="button" class="supervisor-approve-btn btn btn-success" data-request-id="@request.RequestId">موافقة</button>
+                            <button type="button" class="supervisor-reject-btn btn btn-danger" data-request-id="@request.RequestId">رفض</button>
+                        }
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</form>
 
 <!-- Modal Overlay -->
 <div class="supervisor-overlay" id="overlay"></div>
@@ -49,43 +59,71 @@
     <label for="rejectReason">سبب الرفض *</label>
     <textarea id="rejectReason" rows="4" class="form-control mt-2" placeholder="اكتب سبب رفض الطلب..."></textarea>
     <div class="mt-3 text-start">
-        <button onclick="confirmReject()" class="btn btn-danger">تأكيد الرفض</button>
-        <button onclick="closeModal()" class="btn btn-secondary me-2">إغلاق</button>
+        <button type="button" onclick="confirmReject()" class="btn btn-danger">تأكيد الرفض</button>
+        <button type="button" onclick="closeModal()" class="btn btn-secondary me-2">إغلاق</button>
     </div>
 </div>
 
 @section Scripts {
     <script>
         let selectedRow;
+        let selectedRequestId;
 
         document.querySelectorAll(".supervisor-approve-btn").forEach(btn => {
             btn.addEventListener("click", function () {
                 const row = this.closest("tr");
-                row.querySelector(".status").textContent = "موافق عليه";
-                row.querySelector(".status").style.color = "#16a34a";
-                row.querySelector(".actions").innerHTML = "تم الإجراء";
+                const requestId = this.getAttribute("data-request-id");
+                updateStatus(requestId, "موافق عليه", row);
             });
         });
 
         document.querySelectorAll(".supervisor-reject-btn").forEach(btn => {
             btn.addEventListener("click", function () {
                 selectedRow = this.closest("tr");
+                selectedRequestId = this.getAttribute("data-request-id");
                 document.getElementById("rejectModal").style.display = "block";
                 document.getElementById("overlay").style.display = "block";
             });
         });
 
-        function confirmReject() {
+                function confirmReject() {
             const reason = document.getElementById("rejectReason").value.trim();
             if (reason === "") {
                 alert("يرجى إدخال سبب الرفض.");
                 return;
             }
-            selectedRow.querySelector(".status").textContent = "مرفوض";
-            selectedRow.querySelector(".status").style.color = "#dc2626";
-            selectedRow.querySelector(".actions").innerHTML = "تم الإجراء";
+            updateStatus(selectedRequestId, "مرفوض", selectedRow, reason); // ✨ أرسل السبب هنا
             closeModal();
         }
+
+                function updateStatus(requestId, status, row, notes = null) {
+            const data = {
+                requestId: requestId,
+                status: status,
+                notes: notes // ✨ أرسل السبب هنا (null في الموافقة)
+            };
+
+            fetch('/Supervisor/UpdateStatus', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    row.querySelector(".status").textContent = status;
+                    row.querySelector(".status").style.color = (status === "موافق عليه") ? "#16a34a" : "#dc2626";
+                    row.querySelector(".actions").innerHTML = "تم الإجراء";
+                } else {
+                    alert("حدث خطأ أثناء التحديث.");
+                }
+            })
+            .catch(() => alert("فشل الاتصال بالخادم."));
+        }
+
 
         function closeModal() {
             document.getElementById("rejectModal").style.display = "none";
