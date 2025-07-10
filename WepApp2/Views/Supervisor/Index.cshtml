@@ -6,8 +6,36 @@
 
 <!-- ربط ملف CSS -->
 <link rel="stylesheet" href="~/css/Gruop3Style.css" />
+<!-- ربط Font Awesome للأيقونات -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
 <h2 class="mb-4">إدارة الطلبات</h2>
+
+<!-- الفلاتر -->
+<div class="supervisor-filters-container mb-4">
+    <div class="row">
+        <div class="col-md-6">
+            <label for="statusFilter" class="supervisor-filter-label">فلتر حسب الحالة:</label>
+            <select id="statusFilter" class="supervisor-filter-dropdown form-select">
+                <option value="">جميع الحالات</option>
+                <option value="قيد الانتظار">قيد الانتظار</option>
+                <option value="موافق عليه">موافق عليه</option>
+                <option value="مرفوض">مرفوض</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="requestTypeFilter" class="supervisor-filter-label">فلتر حسب نوع الطلب:</label>
+            <select id="requestTypeFilter" class="supervisor-filter-dropdown form-select">
+                <option value="">جميع الأنواع</option>
+                <option value="حجز جهاز">حجز جهاز</option>
+                <option value="إعارة جهاز">إعارة جهاز</option>
+                <option value="زيارة معمل">زيارة معمل</option>
+                <option value="استشارة تقنية">استشارة تقنية</option>
+                <option value="دورة تدريبية">دورة تدريبية</option>
+            </select>
+        </div>
+    </div>
+</div>
 
 <form id="requestsForm" method="post">
     @Html.AntiForgeryToken()
@@ -27,21 +55,31 @@
             @foreach (var request in Model)
             {
                 <tr>
-                    <td>—</td>
+                    <td>@request.RequestId</td>
                     <td>@request.RequestType</td>
                     <td>@request.User?.UserName</td>
                     <td>@request.RequestDate.ToString("yyyy-MM-dd")</td>
                     <td class="status">@request.SupervisorStatus</td>
                     <td class="actions">
-                        @if (request.SupervisorStatus == "موافق عليه" || request.SupervisorStatus == "مرفوض")
-                        {
-                            <span>تم الإجراء</span>
-                        }
-                        else
-                        {
-                            <button type="button" class="supervisor-approve-btn btn btn-success" data-request-id="@request.RequestId">موافقة</button>
-                            <button type="button" class="supervisor-reject-btn btn btn-danger" data-request-id="@request.RequestId">رفض</button>
-                        }
+                        <div class="d-flex justify-content-start gap-2">
+                            @if (request.SupervisorStatus == "موافق عليه" || request.SupervisorStatus == "مرفوض")
+                            {
+                                <span>تم الإجراء</span>
+                            }
+                            else
+                            {
+                                <button type="button" class="supervisor-approve-btn btn btn-success" data-request-id="@request.RequestId">موافقة</button>
+                                <button type="button" class="supervisor-reject-btn btn btn-danger" data-request-id="@request.RequestId">رفض</button>
+                            }
+                            <button type="button" class="supervisor-view-details-btn btn btn-outline-success"
+                                    data-request-id="@request.RequestId"
+                                    data-request-type="@request.RequestType"
+                                    data-user-name="@request.User?.UserName"
+                                    data-request-date="@request.RequestDate.ToString("yyyy-MM-dd")"
+                                    data-status="@request.SupervisorStatus">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             }
@@ -61,6 +99,50 @@
     <div class="mt-3 text-start">
         <button type="button" onclick="confirmReject()" class="btn btn-danger">تأكيد الرفض</button>
         <button type="button" onclick="closeModal()" class="btn btn-secondary me-2">إغلاق</button>
+    </div>
+</div>
+
+<!-- Details Modal -->
+<div class="supervisor-details-modal" id="detailsModal">
+    <h3 class="mb-3">تفاصيل الطلب</h3>
+    <div class="supervisor-details-content">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="supervisor-detail-label">رقم الطلب:</label>
+                <span id="detailRequestId" class="supervisor-detail-value"></span>
+            </div>
+            <div class="col-md-6">
+                <label class="supervisor-detail-label">نوع الطلب:</label>
+                <span id="detailRequestType" class="supervisor-detail-value"></span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-12">
+                <label class="supervisor-detail-label">التفاصيل:</label>
+                <div id="detailDescription" class="supervisor-detail-description-small">
+                    <!-- سيتم إضافة التفاصيل هنا لاحقاً -->
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="supervisor-detail-label">اسم المستخدم:</label>
+                <span id="detailUserName" class="supervisor-detail-value"></span>
+            </div>
+            <div class="col-md-6">
+                <label class="supervisor-detail-label">تاريخ الطلب:</label>
+                <span id="detailRequestDate" class="supervisor-detail-value"></span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="supervisor-detail-label">الحالة:</label>
+                <span id="detailStatus" class="supervisor-detail-value"></span>
+            </div>
+        </div>
+    </div>
+    <div class="mt-3 text-start">
+        <button type="button" onclick="closeDetailsModal()" class="btn btn-secondary">إغلاق</button>
     </div>
 </div>
 
@@ -86,7 +168,29 @@
             });
         });
 
-                function confirmReject() {
+        // زر عرض التفاصيل
+        document.querySelectorAll(".supervisor-view-details-btn").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const requestId = this.getAttribute("data-request-id");
+                const requestType = this.getAttribute("data-request-type");
+                const userName = this.getAttribute("data-user-name");
+                const requestDate = this.getAttribute("data-request-date");
+                const status = this.getAttribute("data-status");
+
+                // ملء البيانات في النافذة
+                document.getElementById("detailRequestId").textContent = requestId;
+                document.getElementById("detailRequestType").textContent = requestType;
+                document.getElementById("detailUserName").textContent = userName || "غير محدد";
+                document.getElementById("detailRequestDate").textContent = requestDate;
+                document.getElementById("detailStatus").textContent = status;
+
+                // فتح النافذة
+                document.getElementById("detailsModal").style.display = "block";
+                document.getElementById("overlay").style.display = "block";
+            });
+        });
+
+        function confirmReject() {
             const reason = document.getElementById("rejectReason").value.trim();
             if (reason === "") {
                 alert("يرجى إدخال سبب الرفض.");
@@ -96,7 +200,7 @@
             closeModal();
         }
 
-                function updateStatus(requestId, status, row, notes = null) {
+        function updateStatus(requestId, status, row, notes = null) {
             const data = {
                 requestId: requestId,
                 status: status,
@@ -124,13 +228,203 @@
             .catch(() => alert("فشل الاتصال بالخادم."));
         }
 
-
         function closeModal() {
             document.getElementById("rejectModal").style.display = "none";
             document.getElementById("overlay").style.display = "none";
             document.getElementById("rejectReason").value = "";
         }
 
-        document.getElementById("overlay").addEventListener("click", closeModal);
+        function closeDetailsModal() {
+            document.getElementById("detailsModal").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+        }
+
+        document.getElementById("overlay").addEventListener("click", function() {
+            closeModal();
+            closeDetailsModal();
+        });
+
+        // وظائف الفلترة
+        function filterTable() {
+            const statusFilter = document.getElementById("statusFilter").value;
+            const requestTypeFilter = document.getElementById("requestTypeFilter").value;
+            const table = document.getElementById("requestsTable");
+            const rows = table.querySelectorAll("tbody tr");
+
+            rows.forEach(row => {
+                const status = row.querySelector(".status").textContent.trim();
+                const requestType = row.cells[1].textContent.trim();
+
+                const statusMatch = statusFilter === "" || status === statusFilter;
+                const typeMatch = requestTypeFilter === "" || requestType === requestTypeFilter;
+
+                if (statusMatch && typeMatch) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+        // ربط الفلاتر بالأحداث
+        document.getElementById("statusFilter").addEventListener("change", filterTable);
+        document.getElementById("requestTypeFilter").addEventListener("change", filterTable);
     </script>
 }
+
+<style>
+    /* أنماط الفلاتر */
+    .supervisor-filters-container {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .supervisor-filter-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .supervisor-filter-dropdown {
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 14px;
+        background-color: white;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+        .supervisor-filter-dropdown:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+    /* تحسين تجاوب الفلاتر على الشاشات الصغيرة */
+    @@media (max-width: 768px) {
+        .supervisor-filters-container .row
+
+    {
+        gap: 15px;
+    }
+
+    }
+
+    /* زر عرض التفاصيل */
+    .supervisor-view-details-btn {
+        font-size: 14px;
+        padding: 6px 12px;
+        border: 1px solid #198754;
+        color: #198754;
+        background-color: transparent;
+        transition: all 0.15s ease-in-out;
+    }
+
+        .supervisor-view-details-btn:hover {
+            background-color: #198754;
+            color: white;
+            border-color: #198754;
+        }
+
+        .supervisor-view-details-btn i {
+            font-size: 12px;
+        }
+
+    /* نافذة تفاصيل الطلب */
+    .supervisor-details-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        z-index: 1001;
+        display: none;
+        max-width: 600px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    .supervisor-details-content {
+        margin-bottom: 20px;
+    }
+
+    .supervisor-detail-label {
+        font-weight: 600;
+        color: #495057;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .supervisor-detail-value {
+        color: #212529;
+        background-color: #f8f9fa;
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 1px solid #dee2e6;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .supervisor-detail-description {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 6px;
+        border: 1px solid #dee2e6;
+        min-height: 60px;
+        color: #6c757d;
+        font-style: italic;
+    }
+
+        .supervisor-detail-description:empty::before {
+            content: "لا توجد تفاصيل إضافية";
+        }
+
+    .supervisor-detail-description-small {
+        background-color: #f8f9fa;
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 1px solid #dee2e6;
+        min-height: 35px;
+        color: #6c757d;
+        font-style: italic;
+        font-size: 14px;
+    }
+
+        .supervisor-detail-description-small:empty::before {
+            content: "لا توجد تفاصيل إضافية";
+        }
+
+    /* تحسين عرض الأزرار في الأجهزة المحمولة */
+    @@media (max-width: 576px) {
+        .actions .btn
+
+    {
+        margin-bottom: 5px;
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+
+    .actions .d-flex {
+        flex-wrap: wrap;
+        gap: 3px !important;
+    }
+
+    .supervisor-details-modal {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .supervisor-detail-value {
+        font-size: 14px;
+    }
+
+    }
+</style>
