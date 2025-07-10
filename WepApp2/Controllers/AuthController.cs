@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 using WepApp2.Data;
 using WepApp2.Models;
 
@@ -23,15 +26,31 @@ namespace WepApp2.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(User user)
+        public async Task<IActionResult> Login(User user)
         {
             var existingUser = _context.Users
                 .FirstOrDefault(u => u.UserName == user.UserName && u.UserPassWord == user.UserPassWord);
 
             if (existingUser != null)
             {
-                // مثال: حفظ في السيشن أو الانتقال للداشبورد
-                return RedirectToAction("HomePage");
+                // إنشاء قائمة الـ Claims
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, existingUser.UserName),
+                    new Claim(ClaimTypes.Role, existingUser.UserRole ?? "Student")
+                };
+
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
+
+                // تسجيل الدخول بالكوكيز
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+                // التوجيه حسب الدور
+                if (existingUser.UserRole == "Supervisor")
+                    return RedirectToAction("Index", "Supervisor");
+
+                return RedirectToAction("HomePage", "Auth");
             }
 
             ViewBag.LoginFailed = true;
@@ -48,21 +67,18 @@ namespace WepApp2.Controllers
         [HttpPost]
         public IActionResult Register(User user, string ConfirmPassword)
         {
-            // التحقق من تطابق كلمتي المرور
             if (user.UserPassWord != ConfirmPassword)
             {
                 ViewBag.PasswordMismatch = true;
                 return View(user);
             }
 
-            // التحقق من أن كلمة المرور ليست فارغة
             if (string.IsNullOrWhiteSpace(user.UserPassWord))
             {
                 ViewBag.PasswordEmpty = true;
                 return View(user);
             }
 
-            // التحقق من وجود مستخدم بنفس اسم المستخدم أو البريد الإلكتروني
             var existingUser = _context.Users
                 .FirstOrDefault(u => u.UserName == user.UserName || u.Email == user.Email);
 
@@ -74,12 +90,14 @@ namespace WepApp2.Controllers
 
             if (ModelState.IsValid)
             {
-                // 🟢 الحل البديل: توليد رقم جديد يدويًا
                 int maxId = _context.Users.Any() ? _context.Users.Max(u => u.UserId) : 0;
+                user.UserId = maxId + 1;
                 user.LastLogIn = DateTime.Now;
                 user.IsActive = true;
+
                 _context.Users.Add(user);
                 _context.SaveChanges();
+
                 return RedirectToAction("Login");
             }
 
@@ -87,12 +105,14 @@ namespace WepApp2.Controllers
         }
 
         // Dashboard view
+        [HttpGet]
         public IActionResult HomePage()
         {
             return View();
         }
 
-        // GET: عرض صفحة نسيت كلمة المرور
+        // GET: Forgot Password
+        [HttpGet]
         public IActionResult ForgotPassword()
         {
             return View();
@@ -108,9 +128,7 @@ namespace WepApp2.Controllers
 
                 if (user != null)
                 {
-                    // إرسال بريد إلكتروني فعلي هنا
-                    // SendPasswordResetEmail(user.Email);
-
+                    // إرسال البريد يتم هنا (إن وجد)
                     return RedirectToAction("Login", new { resetSuccess = true });
                 }
                 else
@@ -121,6 +139,14 @@ namespace WepApp2.Controllers
             }
 
             return View(model);
+        }
+
+        // ✅ تسجيل الخروج
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login");
         }
     }
 }

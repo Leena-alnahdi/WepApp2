@@ -1,22 +1,25 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using WepApp2.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ????? DbContext ??? ????? ????
+// ✅ ربط الـ DbContext بقاعدة البيانات
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// ✅ MVC + Razor Views
 builder.Services.AddControllersWithViews();
 
-// ??? ???? ????? ???????? ??????????
-builder.Services.AddAuthentication("MyCookieAuth")
-    .AddCookie("MyCookieAuth", options =>
+// ✅ تفعيل المصادقة باستخدام الاسم الافتراضي "Cookies"
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
     {
-        options.LoginPath = "/Account/Login";
-        options.AccessDeniedPath = "/Account/AccessDenied";
+        options.LoginPath = "/Auth/Login";               // صفحة تسجيل الدخول
+        options.AccessDeniedPath = "/Auth/AccessDenied"; // صفحة الرفض إذا لزم
     });
 
+// ✅ إضافة صلاحيات (authorization)
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
@@ -26,7 +29,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// ??????? ???????? ??????????
+// ✅ تفعيل المصادقة والصلاحيات
 app.UseAuthentication();
 app.UseAuthorization();
 
