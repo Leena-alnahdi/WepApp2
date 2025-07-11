@@ -14,7 +14,7 @@
 <!-- الفلاتر -->
 <div class="supervisor-filters-container mb-4">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <label for="statusFilter" class="supervisor-filter-label">فلتر حسب الحالة:</label>
             <select id="statusFilter" class="supervisor-filter-dropdown form-select">
                 <option value="">جميع الحالات</option>
@@ -23,7 +23,7 @@
                 <option value="مرفوض">مرفوض</option>
             </select>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <label for="requestTypeFilter" class="supervisor-filter-label">فلتر حسب نوع الطلب:</label>
             <select id="requestTypeFilter" class="supervisor-filter-dropdown form-select">
                 <option value="">جميع الأنواع</option>
@@ -33,6 +33,10 @@
                 <option value="استشارة تقنية">استشارة تقنية</option>
                 <option value="دورة تدريبية">دورة تدريبية</option>
             </select>
+        </div>
+        <div class="col-md-4">
+            <label for="dateFilter" class="supervisor-filter-label">فلتر حسب التاريخ:</label>
+            <input type="date" id="dateFilter" class="supervisor-date-filter form-control">
         </div>
     </div>
 </div>
@@ -76,9 +80,11 @@
                                     data-request-type="@request.RequestType"
                                     data-user-name="@request.User?.UserName"
                                     data-request-date="@request.RequestDate.ToString("yyyy-MM-dd")"
-                                    data-status="@request.SupervisorStatus">
+                                    data-status="@request.SupervisorStatus"
+                                    data-device-name="@(request.RequestType == "حجز جهاز" || request.RequestType == "إعارة جهاز" ? request.Device?.DeviceName : "غير متاح")">
                                 <i class="fas fa-eye"></i>
                             </button>
+
                         </div>
                     </td>
                 </tr>
@@ -116,12 +122,11 @@
                 <span id="detailRequestType" class="supervisor-detail-value"></span>
             </div>
         </div>
+        <!-- ✨ خانة اسم الجهاز الجديدة -->
         <div class="row mb-3">
             <div class="col-12">
                 <label class="supervisor-detail-label">التفاصيل:</label>
-                <div id="detailDescription" class="supervisor-detail-description-small">
-                    <!-- سيتم إضافة التفاصيل هنا لاحقاً -->
-                </div>
+                <span id="detailDeviceName" class="supervisor-detail-value"></span>
             </div>
         </div>
         <div class="row mb-3">
@@ -169,22 +174,22 @@
         });
 
         // زر عرض التفاصيل
-        document.querySelectorAll(".supervisor-view-details-btn").forEach(btn => {
+            document.querySelectorAll(".supervisor-view-details-btn").forEach(btn => {
             btn.addEventListener("click", function () {
                 const requestId = this.getAttribute("data-request-id");
                 const requestType = this.getAttribute("data-request-type");
                 const userName = this.getAttribute("data-user-name");
                 const requestDate = this.getAttribute("data-request-date");
                 const status = this.getAttribute("data-status");
+                const deviceName = this.getAttribute("data-device-name");  // ✨ أخذ اسم الجهاز
 
-                // ملء البيانات في النافذة
                 document.getElementById("detailRequestId").textContent = requestId;
                 document.getElementById("detailRequestType").textContent = requestType;
                 document.getElementById("detailUserName").textContent = userName || "غير محدد";
                 document.getElementById("detailRequestDate").textContent = requestDate;
                 document.getElementById("detailStatus").textContent = status;
+                document.getElementById("detailDeviceName").textContent = deviceName;  // ✨ عرض اسم الجهاز
 
-                // فتح النافذة
                 document.getElementById("detailsModal").style.display = "block";
                 document.getElementById("overlay").style.display = "block";
             });
@@ -244,21 +249,24 @@
             closeDetailsModal();
         });
 
-        // وظائف الفلترة
+        // وظائف الفلترة المحدثة
         function filterTable() {
             const statusFilter = document.getElementById("statusFilter").value;
             const requestTypeFilter = document.getElementById("requestTypeFilter").value;
+            const dateFilter = document.getElementById("dateFilter").value;
             const table = document.getElementById("requestsTable");
             const rows = table.querySelectorAll("tbody tr");
 
             rows.forEach(row => {
                 const status = row.querySelector(".status").textContent.trim();
                 const requestType = row.cells[1].textContent.trim();
+                const requestDate = row.cells[3].textContent.trim(); // عمود التاريخ
 
                 const statusMatch = statusFilter === "" || status === statusFilter;
                 const typeMatch = requestTypeFilter === "" || requestType === requestTypeFilter;
+                const dateMatch = dateFilter === "" || requestDate === dateFilter;
 
-                if (statusMatch && typeMatch) {
+                if (statusMatch && typeMatch && dateMatch) {
                     row.style.display = "";
                 } else {
                     row.style.display = "none";
@@ -269,162 +277,6 @@
         // ربط الفلاتر بالأحداث
         document.getElementById("statusFilter").addEventListener("change", filterTable);
         document.getElementById("requestTypeFilter").addEventListener("change", filterTable);
+        document.getElementById("dateFilter").addEventListener("change", filterTable);
     </script>
 }
-
-<style>
-    /* أنماط الفلاتر */
-    .supervisor-filters-container {
-        background-color: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-
-    .supervisor-filter-label {
-        font-weight: 600;
-        color: #495057;
-        margin-bottom: 8px;
-        display: block;
-    }
-
-    .supervisor-filter-dropdown {
-        border: 1px solid #ced4da;
-        border-radius: 6px;
-        padding: 8px 12px;
-        font-size: 14px;
-        background-color: white;
-        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    }
-
-        .supervisor-filter-dropdown:focus {
-            border-color: #80bdff;
-            outline: 0;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        }
-
-    /* تحسين تجاوب الفلاتر على الشاشات الصغيرة */
-    @@media (max-width: 768px) {
-        .supervisor-filters-container .row
-
-    {
-        gap: 15px;
-    }
-
-    }
-
-    /* زر عرض التفاصيل */
-    .supervisor-view-details-btn {
-        font-size: 14px;
-        padding: 6px 12px;
-        border: 1px solid #198754;
-        color: #198754;
-        background-color: transparent;
-        transition: all 0.15s ease-in-out;
-    }
-
-        .supervisor-view-details-btn:hover {
-            background-color: #198754;
-            color: white;
-            border-color: #198754;
-        }
-
-        .supervisor-view-details-btn i {
-            font-size: 12px;
-        }
-
-    /* نافذة تفاصيل الطلب */
-    .supervisor-details-modal {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: white;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        z-index: 1001;
-        display: none;
-        max-width: 600px;
-        width: 90%;
-        max-height: 80vh;
-        overflow-y: auto;
-    }
-
-    .supervisor-details-content {
-        margin-bottom: 20px;
-    }
-
-    .supervisor-detail-label {
-        font-weight: 600;
-        color: #495057;
-        display: block;
-        margin-bottom: 5px;
-    }
-
-    .supervisor-detail-value {
-        color: #212529;
-        background-color: #f8f9fa;
-        padding: 8px 12px;
-        border-radius: 6px;
-        border: 1px solid #dee2e6;
-        display: block;
-        margin-bottom: 10px;
-    }
-
-    .supervisor-detail-description {
-        background-color: #f8f9fa;
-        padding: 15px;
-        border-radius: 6px;
-        border: 1px solid #dee2e6;
-        min-height: 60px;
-        color: #6c757d;
-        font-style: italic;
-    }
-
-        .supervisor-detail-description:empty::before {
-            content: "لا توجد تفاصيل إضافية";
-        }
-
-    .supervisor-detail-description-small {
-        background-color: #f8f9fa;
-        padding: 8px 12px;
-        border-radius: 6px;
-        border: 1px solid #dee2e6;
-        min-height: 35px;
-        color: #6c757d;
-        font-style: italic;
-        font-size: 14px;
-    }
-
-        .supervisor-detail-description-small:empty::before {
-            content: "لا توجد تفاصيل إضافية";
-        }
-
-    /* تحسين عرض الأزرار في الأجهزة المحمولة */
-    @@media (max-width: 576px) {
-        .actions .btn
-
-    {
-        margin-bottom: 5px;
-        font-size: 12px;
-        padding: 4px 8px;
-    }
-
-    .actions .d-flex {
-        flex-wrap: wrap;
-        gap: 3px !important;
-    }
-
-    .supervisor-details-modal {
-        width: 95%;
-        padding: 20px;
-    }
-
-    .supervisor-detail-value {
-        font-size: 14px;
-    }
-
-    }
-</style>

@@ -18,6 +18,7 @@ namespace WepApp2.Controllers
         {
             var requests = _context.Requests
                                    .Include(r => r.User)
+                                   .Include(r => r.Device) // ✨ إضافة Include لجلب بيانات الجهاز
                                    .ToList();
             return View(requests);
         }
@@ -44,13 +45,11 @@ namespace WepApp2.Controllers
             return Json(new { success = false });
         }
 
-
         public class UpdateStatusRequest
         {
             public int RequestId { get; set; }
             public string Status { get; set; }
             public string? Notes { get; set; }  // ✨ أضفنا خاصية Notes
         }
-
     }
 }

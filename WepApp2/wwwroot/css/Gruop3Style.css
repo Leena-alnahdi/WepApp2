@@ -1,6 +1,175 @@
 ﻿/* supervisor.css */
 
 /* Modal Styles */
+
+/* أنماط الفلاتر */
+.supervisor-filters-container {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.supervisor-filter-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.supervisor-filter-dropdown {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    background-color: white;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+    .supervisor-filter-dropdown:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+/* فلتر التاريخ */
+.supervisor-date-filter {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    background-color: white;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+    .supervisor-date-filter:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+/* تحسين تجاوب الفلاتر على الشاشات الصغيرة */
+@@media (max-width: 768px) {
+    .supervisor-filters-container .row {
+        gap: 15px;
+    }
+
+    .supervisor-filters-container .col-md-4 {
+        margin-bottom: 15px;
+    }
+}
+
+/* زر عرض التفاصيل */
+.supervisor-view-details-btn {
+    font-size: 14px;
+    padding: 6px 12px;
+    border: 1px solid #198754;
+    color: #198754;
+    background-color: transparent;
+    transition: all 0.15s ease-in-out;
+}
+
+    .supervisor-view-details-btn:hover {
+        background-color: #198754;
+        color: white;
+        border-color: #198754;
+    }
+
+    .supervisor-view-details-btn i {
+        font-size: 12px;
+    }
+
+/* نافذة تفاصيل الطلب */
+.supervisor-details-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    display: none;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.supervisor-details-content {
+    margin-bottom: 20px;
+}
+
+.supervisor-detail-label {
+    font-weight: 600;
+    color: #495057;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.supervisor-detail-value {
+    color: #212529;
+    background-color: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.supervisor-detail-description {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    min-height: 60px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+    .supervisor-detail-description:empty::before {
+        content: "لا توجد تفاصيل إضافية";
+    }
+
+.supervisor-detail-description-small {
+    background-color: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    min-height: 35px;
+    color: #6c757d;
+    font-style: italic;
+    font-size: 14px;
+}
+
+    .supervisor-detail-description-small:empty::before {
+        content: "لا توجد تفاصيل إضافية";
+    }
+
+/* تحسين عرض الأزرار في الأجهزة المحمولة */
+@@media (max-width: 576px) {
+    .actions .btn {
+        margin-bottom: 5px;
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+
+    .actions .d-flex {
+        flex-wrap: wrap;
+        gap: 3px !important;
+    }
+
+    .supervisor-details-modal {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .supervisor-detail-value {
+        font-size: 14px;
+    }
+}
 .supervisor-overlay {
     display: none;
     position: fixed;
