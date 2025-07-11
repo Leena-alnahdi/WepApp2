@@ -17,10 +17,15 @@ namespace WepApp2.Controllers
             _context = context;
         }
 
-        // GET: Login
+        // GET: Login - دالة واحدة فقط
         [HttpGet]
         public IActionResult Login()
         {
+            // تمرير TempData إلى ViewBag
+            if (TempData["ResetSuccess"] != null)
+            {
+                ViewBag.ResetSuccess = true;
+            }
             return View();
         }
 
@@ -29,7 +34,7 @@ namespace WepApp2.Controllers
         public async Task<IActionResult> Login(User user)
         {
             var existingUser = _context.Users
-                .FirstOrDefault(u => u.UserName == user.UserName && u.UserPassWord == user.UserPassWord);
+            .FirstOrDefault(u => u.UserName == user.UserName && u.UserPassWord == user.UserPassWord);
 
             if (existingUser != null)
             {
@@ -116,30 +121,47 @@ namespace WepApp2.Controllers
             return View();
         }
 
+        // POST: Forgot Password
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ForgotPassword(User model)
+        public async Task<IActionResult> ForgotPassword(string email)
         {
-            if (ModelState.IsValid)
+            // التحقق من أن البريد ليس فارغاً
+            if (string.IsNullOrEmpty(email))
             {
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
-
-                if (user != null)
-                {
-                    // إرسال البريد يتم هنا (إن وجد)
-                    return RedirectToAction("Login", new { resetSuccess = true });
-                }
-                else
-                {
-                    ViewBag.Error = true;
-                    return View(model);
-                }
+                ViewBag.Error = true;
+                ViewBag.ErrorMessage = "يرجى إدخال البريد الإلكتروني";
+                return View();
             }
 
-            return View(model);
+            // التحقق من أن البريد ينتمي للجامعة
+            if (!email.EndsWith("@kau.edu.sa") && !email.EndsWith("@stu.kau.edu.sa"))
+            {
+                ViewBag.Error = true;
+                ViewBag.ErrorMessage = "يجب استخدام البريد الإلكتروني الجامعي (@kau.edu.sa أو @stu.kau.edu.sa)";
+                return View();
+            }
+
+            // البحث عن المستخدم في قاعدة البيانات
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+
+            if (user != null)
+            {
+                // البريد موجود - استخدام TempData
+                TempData["ResetSuccess"] = "true";
+
+                return RedirectToAction("Login");
+            }
+            else
+            {
+                // البريد غير موجود
+                ViewBag.Error = true;
+                ViewBag.ErrorMessage = "البريد الإلكتروني غير مسجل في النظام، تأكد من صحة البريد الإلكتروني";
+                return View();
+            }
         }
 
-        // ✅ تسجيل الخروج
+        // تسجيل الخروج
         [HttpPost]
         public async Task<IActionResult> Logout()
         {

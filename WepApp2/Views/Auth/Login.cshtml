@@ -1,5 +1,4 @@
-﻿
-@model WepApp2.Models.User
+﻿@model WepApp2.Models.User
 @{
     Layout = null;
     ViewData["Title"] = "تسجيل الدخول - معمل الابتكارات";
@@ -26,7 +25,7 @@
 
         <div class="wil-auth-box">
             <div class="wil-nav-tabs wil-d-flex">
-                <a href="/Auth/Index" class="wil-nav-link wil-nav-link--active wil-flex-fill wil-text-center">
+                <a href="/Auth/Login" class="wil-nav-link wil-nav-link--active wil-flex-fill wil-text-center">
                     <i class="fas fa-sign-in-alt wil-icon-spacing-sm"></i>
                     تسجيل الدخول
                 </a>
@@ -44,12 +43,14 @@
                 </div>
             }
 
-            <!-- Success message for password reset -->
-            <div class="wil-alert wil-alert--success" id="wil-reset-success-alert" style="display: none;">
-                <i class="fas fa-check-circle wil-icon-spacing-sm"></i>
-                <strong>تم إرسال رابط الاستعادة بنجاح!</strong><br>
-                تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني. يرجى فحص بريدك الإلكتروني واتباع التعليمات.
-            </div>
+            @if (ViewBag.ResetSuccess == true)
+            {
+                <div class="wil-alert wil-alert--success" id="wil-reset-success-alert">
+                    <i class="fas fa-check-circle wil-icon-spacing-sm"></i>
+                    <strong>تم إرسال رابط الاستعادة بنجاح!</strong><br>
+                    تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني. يرجى التأكد من بريدك الإلكتروني واتباع التعليمات.
+                </div>
+            }
 
             <form method="post" asp-action="Login">
                 @Html.AntiForgeryToken()
@@ -92,15 +93,9 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Check for reset success message
-            const urlParams = new URLSearchParams(window.location.search);
-            const resetSuccess = urlParams.get('resetSuccess');
-
-            if (resetSuccess === 'true') {
-                const successAlert = document.getElementById('wil-reset-success-alert');
-                successAlert.style.display = 'block';
-
-                // Auto-hide success message after 8 seconds
+            // إخفاء رسالة النجاح تلقائياً بعد 8 ثوان
+            const successAlert = document.getElementById('wil-reset-success-alert');
+            if (successAlert) {
                 setTimeout(function () {
                     successAlert.style.opacity = '0';
                     successAlert.style.transform = 'translateY(-20px)';
@@ -108,12 +103,6 @@
                         successAlert.style.display = 'none';
                     }, 300);
                 }, 8000);
-
-                // Clean up URL
-                if (window.history && window.history.pushState) {
-                    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-                    window.history.pushState({ path: newUrl }, '', newUrl);
-                }
             }
         });
     </script>

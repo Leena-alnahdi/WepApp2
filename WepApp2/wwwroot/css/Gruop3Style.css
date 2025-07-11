@@ -2162,3 +2162,55 @@ button.wil-btn-primary:not(.wil-nav-link) {
     display: block !important;
     text-align: center !important;
 }
+/* ===================================== */
+/* رسائل الخطأ والنجاح في ForgotPassword */
+/* ===================================== */
+
+/* تحسين مظهر رسائل الخطأ في صفحة استعادة كلمة المرور */
+.wil-auth-box .wil-alert {
+    margin-bottom: 20px !important;
+    padding: 15px 20px !important;
+    font-weight: 500 !important;
+    border-right-width: 4px !important;
+    animation: wil-slideDown 0.4s ease-out !important;
+}
+
+/* رسالة الخطأ */
+.wil-auth-box .wil-alert--danger {
+    background-color: #fee !important;
+    color: #c33 !important;
+    border-right-color: #dc3545 !important;
+}
+
+/* رسالة النجاح في صفحة تسجيل الدخول */
+#wil-reset-success-alert {
+    background-color: #d4edda !important;
+    color: #155724 !important;
+    border-right: 4px solid #28a745 !important;
+    animation: wil-slideDown 0.4s ease-out !important;
+}
+
+/* تحريك ظهور الرسائل */
+@keyframes wil-slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* تحريك اختفاء الرسائل */
+.wil-alert[style*="opacity: 0"] {
+    transition: all 0.3s ease-out !important;
+}
+
+/* التأكد من توسيط زر إرسال رابط الاستعادة */
+.wil-auth-box form .wil-btn-primary {
+    text-align: center !important;
+    display: block !important;
+    width: 100% !important;
+}
