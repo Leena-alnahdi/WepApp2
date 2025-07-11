@@ -1,130 +1,170 @@
-﻿@{
+﻿@model WepApp2.Models.CustomReportViewModel
+@{
     Layout = "~/Views/Shared/_LayoutReports.cshtml";
-    ViewData["Title"] = "إنشاء تقرير مخصص";
+    // Layout = "_Layout_Bootstrap"; // تم التعليق على هذا لتجنب التعارض
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/Gruop3Style.css" />
-}
+<div class="customreport-main-container d-flex flex-column align-items-center justify-content-center text-center min-vh-100">
+    <h2 class="customreport-section-title mb-4">إنشاء تقرير مخصص</h2>
 
-<div class="customreport-main-container mt-5">
-    <h2 class="customreport-section-title">إنشاء تقرير مخصص</h2>
-
-    <form method="post" asp-action="GenerateCustomReport" asp-controller="Reports">
-        <div class="mb-3">
-            <label class="form-label customreport-form-label">عنوان التقرير</label>
-            <input type="text" name="ReportTitle" class="form-control" placeholder="تقرير" required />
+    <form asp-action="CreateCustomReport" method="post" class="w-100" style="max-width: 600px;">
+        <div class="mb-4 text-end">
+            <label class="customreport-form-label d-block">عنوان التقرير</label>
+            <input asp-for="ReportTitle" class="form-control text-end" />
         </div>
 
-        <div class="mb-3">
-            <label class="form-label customreport-form-label">نوع التقرير</label>
-            <select name="ReportType" class="form-select" id="customReportTypeSelect" onchange="toggleCustomReportFields()" required>
+        <div class="mb-4 text-end">
+            <label class="customreport-form-label d-block">نوع التقرير</label>
+            <select asp-for="ReportType" class="form-select text-end" id="reportType">
                 <option value="">-- اختر نوع التقرير --</option>
-                <option value="Users">تقرير المستخدمين</option>
-                <option value="Devices">تقرير الأجهزة</option>
-                <option value="Services">تقرير الخدمات</option>
-                <option value="Requests">تقرير الطلبات</option>
+                <option value="تقرير الخدمات">تقرير الخدمات</option>
+                <option value="تقرير الأجهزة">تقرير الأجهزة</option>
+                <option value="تقرير المستخدمين">تقرير المستخدمين</option>
+                <option value="تقرير الطلبات">تقرير الطلبات</option>
             </select>
         </div>
 
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label customreport-form-label">من تاريخ</label>
-                <input type="date" name="FromDate" class="form-control" required />
+        <!-- ✅ قسم تقرير الخدمات -->
+        <div id="serviceFilterSection" class="mb-4 text-end" style="display: none;">
+            <label class="customreport-form-label d-block">نوع الخدمة</label>
+            <select asp-for="ServiceType" class="form-select text-end" id="serviceType">
+                <option value="">-- الكل --</option>
+                <option value="زيارة المعمل">زيارة المعمل</option>
+                <option value="الاستشارات التقنية">الاستشارات التقنية</option>
+                <option value="إعارة الأجهزة">إعارة الأجهزة</option>
+                <option value="الدورات التدريبية">الدورات التدريبية</option>
+            </select>
+        </div>
+
+        <!-- ✅ قسم التاريخ -->
+        <div id="dateSection" class="mb-4 row text-end">
+            <div class="col">
+                <label class="customreport-form-label d-block">من تاريخ</label>
+                <input type="date" asp-for="FromDate" class="form-control text-end" />
             </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label customreport-form-label">إلى تاريخ</label>
-                <input type="date" name="ToDate" class="form-control" required />
+            <div class="col">
+                <label class="customreport-form-label d-block">إلى تاريخ</label>
+                <input type="date" asp-for="ToDate" class="form-control text-end" />
             </div>
         </div>
 
-        <div class="mt-4 customreport-fields-wrapper">
-            <label class="form-label customreport-form-label d-block mb-2">الحقول المطلوبة</label>
-            <div id="selectAllContainer"></div>
-            <div id="customReportFieldsContainer" class="customreport-fields-container">
-                <!-- سيتم تعبئة هذه الحقول بواسطة JavaScript -->
+        <div id="fieldsSection" class="customreport-fields-container mb-4 text-end" style="display:none">
+            <label class="customreport-form-label d-block">الحقول المطلوبة</label>
+            <div id="fieldsContainer" class="d-flex flex-column gap-2">
+                <!-- سيتم تعبئتها ديناميكيًا -->
             </div>
         </div>
 
-        <div class="text-center">
-            <div class="customreport-action-buttons">
-                <button type="submit" class="btn btn-success">إنشاء التقرير</button>
-                <a asp-controller="Reports" asp-action="AllReports" class="btn btn-outline-secondary">العودة</a>
-            </div>
+        <!-- ✅ نهاية قسم تقرير الخدمات -->
+
+        <div class="customreport-action-buttons d-flex justify-content-center gap-3">
+            <button type="submit" class="btn btn-success">إنشاء التقرير</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">العودة</a>
         </div>
     </form>
 </div>
 
 @section Scripts {
     <script>
-        const customReportFields = {
-            Users: [
-                "الاسم",
-                "اسم المستخدم",
-                "البريد الإلكتروني",
-                "رقم الجوال",
-                "الجهة",
-                "القسم",
-                "نوع المستخدم",
-                "الحالة"
-            ],
-            Devices: [
-                "اسم الجهاز",
-                "نوع الجهاز",
-                "الحالة",
-                "القسم",
-                "آخر صيانة"
-            ],
-            Services: [
-                "اسم الخدمة",
-                "نوع الخدمة",
-                "اسم مقدم الطلب",
-                "الحالة",
-                "وقت الطلب"
-            ],
-            Requests: [
-                "نوع الطلب",
-                "المستفيد",
-                "الجهاز",
-                "التاريخ",
-                "الوقت",
-                "المشرف المسند",
-                "الحالة"
-            ]
-        };
+        const reportTypeSelect = document.getElementById('reportType');
+        const serviceFilterSection = document.getElementById('serviceFilterSection');
+        const serviceTypeSelect = document.getElementById('serviceType');
+        const fieldsSection = document.getElementById('fieldsSection');
+        const fieldsContainer = document.getElementById('fieldsContainer');
 
-        function toggleCustomReportFields() {
-            const type = document.getElementById("customReportTypeSelect").value;
-            const container = document.getElementById("customReportFieldsContainer");
-            container.innerHTML = "";
+        const generalFields = [
+            { value: "اسم الخدمة", label: "اسم الخدمة" },
+            { value: "نوع الخدمة", label: "نوع الخدمة" },
+            { value: "تاريخ الطلب", label: "تاريخ الطلب" },
+            { value: "المستخدم", label: "المستخدم" },
+            { value: "الحالة", label: "حالة الخدمة" }
+        ];
 
-            if (customReportFields[type]) {
-                // Add animation to fields appearance
-                container.style.opacity = "0";
+        const courseFields = [
+            { value: "اسم الدورة", label: "اسم الدورة" },
+            { value: "مجال الدورة", label: "مجال الدورة" },
+            { value: "مقدم الدورة", label: "مقدم الدورة" },
+            { value: "المقاعد", label: "عدد المقاعد" },
+            { value: "الوقت", label: "الوقت" },
+            { value: "نوع المتدربين", label: "نوع المتدربين" },
+            { value: "مدة الدورة", label: "مدة الدورة" },
+            { value: "عدد الأيام", label: "عدد الأيام" },
+            { value: "الحالة", label: "الحالة" }
+        ];
 
-                customReportFields[type].forEach((field, index) => {
-                    const checkboxId = `customReportField_${index}`;
-                    container.innerHTML += `
-                        <div class="customreport-form-check">
-                            <input class="form-check-input" type="checkbox" name="SelectedFields" value="${field}" id="${checkboxId}" checked>
-                            <label class="form-check-label" for="${checkboxId}">${field}</label>
-                        </div>`;
-                });
+        const deviceLoanFields = [
+            { value: "اسم الجهاز", label: "اسم الجهاز" },
+            { value: "المدة", label: "مدة الإعارة" },
+            { value: "الجهة المستفيدة", label: "الجهة المستفيدة" },
+            { value: "الغرض من الإعارة", label: "الغرض من الإعارة" },
+            { value: "مقدم الطلب", label: "مقدم الطلب" },
+            { value: "حالة الطلب", label: "حالة الطلب" }
+        ];
 
-                // Fade in animation
-                setTimeout(() => {
-                    container.style.transition = "opacity 0.3s ease-in";
-                    container.style.opacity = "1";
-                }, 100);
+        const consultationFields = [
+            { value: "عنوان الاستشارة", label: "عنوان الاستشارة" },
+            { value: "الوصف", label: "الوصف" },
+            { value: "المستفيد", label: "المستفيد" },
+            { value: "مقدم الاستشارة", label: "مقدم الاستشارة" },
+            { value: "الحالة", label: "الحالة" }
+        ];
+
+        const visitFields = [
+            { value: "نوع الزيارة", label: "نوع الزيارة" },
+            { value: "اسم الجهة", label: "اسم الجهة" },
+            { value: "عدد الزوار", label: "عدد الزوار" },
+            { value: "تاريخ الزيارة", label: "تاريخ الزيارة" },
+            { value: "اسم المستخدم", label: "اسم المستخدم" },
+            { value: "الحالة", label: "الحالة" }
+        ];
+
+        function renderFields(fields) {
+            fieldsContainer.innerHTML = "";
+            fields.forEach(field => {
+                const div = document.createElement('div');
+                div.classList.add('form-check', 'form-check-inline', 'd-flex', 'align-items-center', 'gap-2', 'mb-1');
+                div.innerHTML = `
+                    <input class="form-check-input" type="checkbox" name="Fields" value="${field.value}" id="field_${field.value}">
+                    <label class="form-check-label mb-0" for="field_${field.value}">${field.label}</label>
+                `;
+                fieldsContainer.appendChild(div);
+            });
+            fieldsSection.style.display = 'block';
+        }
+
+        function updateFieldsByServiceType(serviceType) {
+            switch (serviceType) {
+                case "الدورات التدريبية":
+                    renderFields(courseFields);
+                    break;
+                case "إعارة الأجهزة":
+                    renderFields(deviceLoanFields);
+                    break;
+                case "الاستشارات التقنية":
+                    renderFields(consultationFields);
+                    break;
+                case "زيارة المعمل":
+                    renderFields(visitFields);
+                    break;
+                default:
+                    renderFields(generalFields);
             }
         }
 
-        // Initialize on page load if a type is already selected
-        document.addEventListener('DOMContentLoaded', function() {
-            const selectedType = document.getElementById("customReportTypeSelect").value;
-            if (selectedType) {
-                toggleCustomReportFields();
+        reportTypeSelect.addEventListener('change', function () {
+            const selectedType = this.value;
+            if (selectedType === 'تقرير الخدمات') {
+                serviceFilterSection.style.display = 'block';
+                updateFieldsByServiceType(serviceTypeSelect.value);
+            } else {
+                serviceFilterSection.style.display = 'none';
+                fieldsSection.style.display = 'none';
+                fieldsContainer.innerHTML = '';
             }
+        });
+
+        serviceTypeSelect.addEventListener('change', function () {
+            updateFieldsByServiceType(this.value);
         });
     </script>
 }

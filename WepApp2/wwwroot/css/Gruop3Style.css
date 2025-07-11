@@ -1893,3 +1893,272 @@ main {
     margin-right: 0 !important;
     margin-left: 0 !important;
 }
+@model WepApp2.Models.CustomReportViewModel @ {
+    ViewData ["Title"] = "إنشاء تقرير مخصص";
+    Layout = "_Layout_Bootstrap";
+}
+
+<div class="customreport-main-container" >
+<h2 class="customreport-section-title" > إنشاء تقرير مخصص</h2 >
+
+<form asp-action="CreateCustomReport" method="post" >
+<div class="mb-4" >
+<label class="customreport-form-label" > عنوان التقرير</label >
+<input asp-for="ReportTitle" class="form-control" / >
+</div >
+
+<div class="mb-4" >
+<label class="customreport-form-label" > نوع التقرير</label >
+<select asp-for="ReportType" class="form-select" id="reportType" >
+<option value="" > -- اختر نوع التقرير --</option >
+<option value="تقرير الخدمات" > تقرير الخدمات</option >
+<option value="تقرير الأجهزة" > تقرير الأجهزة</option >
+<option value="تقرير المستخدمين" > تقرير المستخدمين</option >
+<option value="تقرير الطلبات" > تقرير الطلبات</option >
+</select >
+</div >
+<!-- ✅ قسم تقرير الخدمات -->
+<div id="serviceFilterSection" class="mb-4" style="display: none;" >
+<label class="customreport-form-label" > نوع الخدمة</label >
+<select asp-for="ServiceType" class="form-select" id="serviceType" >
+<option value="" > -- الكل --</option >
+<option value="زيارة المعمل" > زيارة المعمل</option >
+<option value="الاستشارات التقنية" > الاستشارات التقنية</option >
+<option value="إعارة الأجهزة" > إعارة الأجهزة</option >
+<option value="الدورات التدريبية" > الدورات التدريبية</option >
+</select >
+</div >
+
+<div id="fieldsSection" class="customreport-fields-container" style="display:none" >
+<label class="customreport-form-label" > الحقول المطلوبة</label >
+<div id="fieldsContainer" >
+<!-- سيتم تعبئتها ديناميكيًا -->
+</div >
+</div >
+<!-- ✅ نهاية قسم تقرير الخدمات -->
+<div class="customreport-action-buttons" >
+<button type="submit" class="btn btn-success" > إنشاء التقرير</button >
+<a asp-action="Index" class="btn btn-outline-secondary" > العودة</a >
+</div >
+</form >
+</div >
+
+@section Scripts {
+    <script> const reportTypeSelect = document.getElementById('reportType');
+    const serviceFilterSection = document.getElementById('serviceFilterSection');
+    const serviceTypeSelect = document.getElementById('serviceType');
+    const fieldsSection = document.getElementById('fieldsSection');
+    const fieldsContainer = document.getElementById('fieldsContainer');
+    const generalFields = [
+            { value: "اسم الخدمة", label: "اسم الخدمة" },
+            { value: "نوع الخدمة", label: "نوع الخدمة" },
+            { value: "تاريخ الطلب", label: "تاريخ الطلب" },
+            { value: "المستخدم", label: "المستخدم" },
+            { value: "الحالة", label: "حالة الخدمة" }
+        ];
+    const courseFields = [
+            { value: "اسم الدورة", label: "اسم الدورة" },
+            { value: "مجال الدورة", label: "مجال الدورة" },
+            { value: "مقدم الدورة", label: "مقدم الدورة" },
+            { value: "المقاعد", label: "عدد المقاعد" },
+            { value: "الوقت", label: "الوقت" },
+            { value: "نوع المتدربين", label: "نوع المتدربين" },
+            { value: "مدة الدورة", label: "مدة الدورة" },
+            { value: "عدد الأيام", label: "عدد الأيام" },
+            { value: "الحالة", label: "الحالة" }
+        ];
+    const deviceLoanFields = [
+            { value: "اسم الجهاز", label: "اسم الجهاز" },
+            { value: "المدة", label: "مدة الإعارة" },
+            { value: "الجهة المستفيدة", label: "الجهة المستفيدة" },
+            { value: "الغرض من الإعارة", label: "الغرض من الإعارة" },
+            { value: "مقدم الطلب", label: "مقدم الطلب" },
+            { value: "حالة الطلب", label: "حالة الطلب" }
+        ];
+    const consultationFields = [
+            { value: "عنوان الاستشارة", label: "عنوان الاستشارة" },
+            { value: "الوصف", label: "الوصف" },
+            { value: "المستفيد", label: "المستفيد" },
+            { value: "مقدم الاستشارة", label: "مقدم الاستشارة" },
+            { value: "الحالة", label: "الحالة" }
+        ];
+    const visitFields = [
+            { value: "نوع الزيارة", label: "نوع الزيارة" },
+            { value: "اسم الجهة", label: "اسم الجهة" },
+            { value: "عدد الزوار", label: "عدد الزوار" },
+            { value: "تاريخ الزيارة", label: "تاريخ الزيارة" },
+            { value: "اسم المستخدم", label: "اسم المستخدم" },
+            { value: "الحالة", label: "الحالة" }
+        ];
+    function renderFields(fields)
+
+{
+    fieldsContainer .innerHTML = "";
+    fields .forEach(field => {
+                const div = document.createElement('div');
+                div.classList.add('form-check', 'customreport-form-check');
+                div.innerHTML = `
+                    <input class="form-check-input" type="checkbox" name="Fields" value="${field.value}" id="field_${field.value}">
+                    <label class="form-check-label" for="field_${field.value}">${field.label}</label>
+                `;
+                fieldsContainer.appendChild(div);
+            });
+    fieldsSection .style.display = 'block';
+}
+
+function updateFieldsByServiceType(serviceType) {
+    switch (serviceType)
+
+{
+    case "الدورات التدريبية": renderFields(courseFields);
+    break;
+    case "إعارة الأجهزة": renderFields(deviceLoanFields);
+    break;
+    case "الاستشارات التقنية": renderFields(consultationFields);
+    break;
+    case "زيارة المعمل": renderFields(visitFields);
+    break;
+    default: renderFields(generalFields);
+}
+
+}
+
+.customreport-fields-container {
+    margin-top: 1rem;
+}
+
+.customreport-form-check {
+    margin-bottom: 0.5rem;
+}
+/* دعم عناصر تقارير الخدمات */
+.customreport-form-label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+    color: #fff;
+}
+
+.customreport-fields-container {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.customreport-form-check {
+    margin-bottom: 10px;
+}
+
+.customreport-main-container {
+    padding: 40px;
+    background: linear-gradient(to bottom, #009444, #007e3a);
+    color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+.form-select,
+.form-control {
+    background-color: #fff;
+    color: #000;
+}
+
+.customreport-action-buttons {
+    margin-top: 20px;
+}
+/* وسطي العنوان */
+.customreport-section-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+/* وسطي الأزرار */
+.customreport-action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* لضمان أن يكون كامل النموذج في منتصف الشاشة */
+.customreport-main-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 3rem;
+}
+/* ===================================== */
+/* إصلاح نهائي لتوسيط الأزرار           */
+/* أضف هذا في نهاية ملف CSS            */
+/* ===================================== */
+
+/* إعادة تعيين الأنماط للزر الأساسي */
+form .wil-btn-primary,
+.wil-btn-primary {
+    text-align: center !important;
+    display: inline-block !important;
+    width: 100% !important;
+}
+
+/* استهداف زر إنشاء الحساب مباشرة */
+button#wil-submit-btn {
+    text-align: center !important;
+    display: inline-block !important;
+    width: 100% !important;
+    line-height: 1.5 !important;
+}
+
+/* إزالة أي أنماط flex قد تسبب مشاكل */
+.wil-btn-primary:not(.wil-nav-link) {
+    display: inline-block !important;
+    text-align: center !important;
+}
+
+/* التأكد من توسيط النص داخل جميع الأزرار */
+.btn.wil-btn-primary {
+    text-align: center !important;
+}
+
+/* توسيط الحاوية الأب */
+.text-center {
+    text-align: center !important;
+}
+
+    /* إضافة أنماط inline-block للتوافق */
+    .text-center .btn {
+        display: inline-block !important;
+        text-align: center !important;
+    }
+/* ===================================== */
+/* توسيط زر تسجيل الدخول                */
+/* ===================================== */
+
+/* توسيط جميع أزرار submit من نوع wil-btn-primary */
+.wil-btn-primary[type="submit"] {
+    text-align: center !important;
+    display: block !important;
+    width: 100% !important;
+    line-height: normal !important;
+    padding: 14px 30px !important;
+}
+
+/* توسيط زر تسجيل الدخول في صفحة Login */
+form .btn.wil-btn-primary {
+    text-align: center !important;
+    display: block !important;
+    width: 100% !important;
+}
+
+/* التأكد من توسيط النص مع الأيقونة */
+.wil-btn-primary i.fa-sign-in-alt {
+    margin-left: 8px !important;
+    vertical-align: middle !important;
+}
+
+/* إزالة أي تأثيرات flex */
+button.wil-btn-primary:not(.wil-nav-link) {
+    display: block !important;
+    text-align: center !important;
+}

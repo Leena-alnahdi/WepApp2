@@ -90,8 +90,6 @@ namespace WepApp2.Controllers
 
             if (ModelState.IsValid)
             {
-                int maxId = _context.Users.Any() ? _context.Users.Max(u => u.UserId) : 0;
-                user.UserId = maxId + 1;
                 user.LastLogIn = DateTime.Now;
                 user.IsActive = true;
 
