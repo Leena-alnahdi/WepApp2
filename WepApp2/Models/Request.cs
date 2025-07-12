@@ -1,4 +1,9 @@
-﻿namespace WepApp2.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace WepApp2.Models;
+
+public partial class Request
 {
     public int RequestId { get; set; }
 
