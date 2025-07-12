@@ -1,9 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Security.Claims;
-using WepApp2.Data;
 using WepApp2.Models;
 
 namespace WepApp2.Controllers
@@ -103,18 +99,11 @@ namespace WepApp2.Controllers
 
                 return RedirectToAction("Login");
             }
-
-            return View(user);
         }
 
-        // Dashboard view
-        [HttpGet]
-        public IActionResult HomePage()
-        {
-            return View();
+            return View(model);
         }
 
-        // GET: Forgot Password
         [HttpGet]
         public IActionResult ForgotPassword()
         {

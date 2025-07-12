@@ -18,7 +18,6 @@ namespace WepApp2.Controllers
         [HttpPost]
         public IActionResult GenerateCustomReport(string ReportTitle, string ReportType, DateTime FromDate, DateTime ToDate, List<string> SelectedFields)
         {
-            // بيانات وهمية مؤقتة لتجربة العرض والطباعة
             var fakeData = new List<DeviceReportViewModel>
             {
                 new DeviceReportViewModel { Id = 1, DeviceName = "طابعة ثلاثية الأبعاد - 001", DeviceType = "طابعة ثلاثية الأبعاد", Status = "تشغيل" },
@@ -34,12 +33,6 @@ namespace WepApp2.Controllers
             ViewBag.ToDate = ToDate.ToString("yyyy-MM-dd");
 
             return View("PrintReport", fakeData);
-        }
-
-        [HttpGet]
-        public IActionResult PrintReport()
-        {
-            return View();
         }
     }
 }
