@@ -2062,135 +2062,8 @@ main {
     margin-right: 0 !important;
     margin-left: 0 !important;
 }
-@model WepApp2.Models.CustomReportViewModel @ {
-    ViewData ["Title"] = "إنشاء تقرير مخصص";
-    Layout = "_Layout_Bootstrap";
-}
 
-<div class="customreport-main-container" >
-<h2 class="customreport-section-title" > إنشاء تقرير مخصص</h2 >
 
-<form asp-action="CreateCustomReport" method="post" >
-<div class="mb-4" >
-<label class="customreport-form-label" > عنوان التقرير</label >
-<input asp-for="ReportTitle" class="form-control" / >
-</div >
-
-<div class="mb-4" >
-<label class="customreport-form-label" > نوع التقرير</label >
-<select asp-for="ReportType" class="form-select" id="reportType" >
-<option value="" > -- اختر نوع التقرير --</option >
-<option value="تقرير الخدمات" > تقرير الخدمات</option >
-<option value="تقرير الأجهزة" > تقرير الأجهزة</option >
-<option value="تقرير المستخدمين" > تقرير المستخدمين</option >
-<option value="تقرير الطلبات" > تقرير الطلبات</option >
-</select >
-</div >
-<!-- ✅ قسم تقرير الخدمات -->
-<div id="serviceFilterSection" class="mb-4" style="display: none;" >
-<label class="customreport-form-label" > نوع الخدمة</label >
-<select asp-for="ServiceType" class="form-select" id="serviceType" >
-<option value="" > -- الكل --</option >
-<option value="زيارة المعمل" > زيارة المعمل</option >
-<option value="الاستشارات التقنية" > الاستشارات التقنية</option >
-<option value="إعارة الأجهزة" > إعارة الأجهزة</option >
-<option value="الدورات التدريبية" > الدورات التدريبية</option >
-</select >
-</div >
-
-<div id="fieldsSection" class="customreport-fields-container" style="display:none" >
-<label class="customreport-form-label" > الحقول المطلوبة</label >
-<div id="fieldsContainer" >
-<!-- سيتم تعبئتها ديناميكيًا -->
-</div >
-</div >
-<!-- ✅ نهاية قسم تقرير الخدمات -->
-<div class="customreport-action-buttons" >
-<button type="submit" class="btn btn-success" > إنشاء التقرير</button >
-<a asp-action="Index" class="btn btn-outline-secondary" > العودة</a >
-</div >
-</form >
-</div >
-
-@section Scripts {
-    <script> const reportTypeSelect = document.getElementById('reportType');
-    const serviceFilterSection = document.getElementById('serviceFilterSection');
-    const serviceTypeSelect = document.getElementById('serviceType');
-    const fieldsSection = document.getElementById('fieldsSection');
-    const fieldsContainer = document.getElementById('fieldsContainer');
-    const generalFields = [
-            { value: "اسم الخدمة", label: "اسم الخدمة" },
-            { value: "نوع الخدمة", label: "نوع الخدمة" },
-            { value: "تاريخ الطلب", label: "تاريخ الطلب" },
-            { value: "المستخدم", label: "المستخدم" },
-            { value: "الحالة", label: "حالة الخدمة" }
-        ];
-    const courseFields = [
-            { value: "اسم الدورة", label: "اسم الدورة" },
-            { value: "مجال الدورة", label: "مجال الدورة" },
-            { value: "مقدم الدورة", label: "مقدم الدورة" },
-            { value: "المقاعد", label: "عدد المقاعد" },
-            { value: "الوقت", label: "الوقت" },
-            { value: "نوع المتدربين", label: "نوع المتدربين" },
-            { value: "مدة الدورة", label: "مدة الدورة" },
-            { value: "عدد الأيام", label: "عدد الأيام" },
-            { value: "الحالة", label: "الحالة" }
-        ];
-    const deviceLoanFields = [
-            { value: "اسم الجهاز", label: "اسم الجهاز" },
-            { value: "المدة", label: "مدة الإعارة" },
-            { value: "الجهة المستفيدة", label: "الجهة المستفيدة" },
-            { value: "الغرض من الإعارة", label: "الغرض من الإعارة" },
-            { value: "مقدم الطلب", label: "مقدم الطلب" },
-            { value: "حالة الطلب", label: "حالة الطلب" }
-        ];
-    const consultationFields = [
-            { value: "عنوان الاستشارة", label: "عنوان الاستشارة" },
-            { value: "الوصف", label: "الوصف" },
-            { value: "المستفيد", label: "المستفيد" },
-            { value: "مقدم الاستشارة", label: "مقدم الاستشارة" },
-            { value: "الحالة", label: "الحالة" }
-        ];
-    const visitFields = [
-            { value: "نوع الزيارة", label: "نوع الزيارة" },
-            { value: "اسم الجهة", label: "اسم الجهة" },
-            { value: "عدد الزوار", label: "عدد الزوار" },
-            { value: "تاريخ الزيارة", label: "تاريخ الزيارة" },
-            { value: "اسم المستخدم", label: "اسم المستخدم" },
-            { value: "الحالة", label: "الحالة" }
-        ];
-    function renderFields(fields)
-
-{
-    fieldsContainer .innerHTML = "";
-    fields .forEach(field => {
-                const div = document.createElement('div');
-                div.classList.add('form-check', 'customreport-form-check');
-                div.innerHTML = `
-                    <input class="form-check-input" type="checkbox" name="Fields" value="${field.value}" id="field_${field.value}">
-                    <label class="form-check-label" for="field_${field.value}">${field.label}</label>
-                `;
-                fieldsContainer.appendChild(div);
-            });
-    fieldsSection .style.display = 'block';
-}
-
-function updateFieldsByServiceType(serviceType) {
-    switch (serviceType)
-
-{
-    case "الدورات التدريبية": renderFields(courseFields);
-    break;
-    case "إعارة الأجهزة": renderFields(deviceLoanFields);
-    break;
-    case "الاستشارات التقنية": renderFields(consultationFields);
-    break;
-    case "زيارة المعمل": renderFields(visitFields);
-    break;
-    default: renderFields(generalFields);
-}
-
-}
 
 .customreport-fields-container {
     margin-top: 1rem;
@@ -2383,3 +2256,286 @@ button.wil-btn-primary:not(.wil-nav-link) {
     display: block !important;
     width: 100% !important;
 }
+.report-btn-primary:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+/* الحقول المطلوبة header */
+.fields-section .form-label {
+    margin-bottom: 0;
+}
+
+.date-field-group .form-label {
+    font-weight: normal;
+    font-size: 14px;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+/* ===================================== */
+/* 9. CreateCustomReport Page Styles     */
+/* ===================================== */
+
+/* إعادة تعيين الأنماط الأساسية */
+.create-report-page {
+    background: #f5f7fa;
+    min-height: 100vh;
+    padding: 40px 20px;
+    font-family: 'Tajawal', sans-serif;
+}
+
+/* الحاوي الرئيسي */
+.create-report-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+}
+
+/* العنوان الرئيسي */
+.create-report-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 40px;
+}
+
+/* مجموعة الحقول */
+.report-form-group {
+    margin-bottom: 25px;
+}
+
+/* تسميات الحقول */
+.report-form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #495057;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+/* حقول الإدخال */
+.report-form-control {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+    .report-form-control:focus {
+        outline: none;
+        border-color: #28a745;
+        box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.1);
+    }
+
+/* حقول التاريخ */
+.date-fields-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.date-field-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .date-field-wrapper label {
+        font-weight: normal;
+        font-size: 14px;
+        color: #6c757d;
+        margin-bottom: 0;
+        white-space: nowrap;
+    }
+
+.date-separator {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* قسم الحقول المطلوبة */
+.fields-selection-section {
+    background: #f0f8f0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.fields-selection-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.fields-selection-title {
+    font-weight: bold;
+    color: #495057;
+    margin: 0;
+}
+
+.btn-select-all {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .btn-select-all:hover {
+        background: #218838;
+    }
+
+/* شبكة الحقول */
+.fields-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 10px;
+    background: white;
+    border-radius: 6px;
+}
+
+    .fields-grid::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .fields-grid::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+
+    .fields-grid::-webkit-scrollbar-thumb {
+        background: #28a745;
+        border-radius: 4px;
+    }
+
+/* عنصر الحقل */
+.field-checkbox-item {
+    background: white;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+}
+
+    .field-checkbox-item:hover {
+        border-color: #28a745;
+        background: #f8fdf8;
+    }
+
+.field-checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin: 0;
+}
+
+    .field-checkbox-label input {
+        width: 18px;
+        height: 18px;
+        margin-left: 10px;
+        cursor: pointer;
+        accent-color: #28a745;
+    }
+
+    .field-checkbox-label span {
+        color: #495057;
+        font-size: 14px;
+    }
+
+/* أزرار الإجراءات */
+.report-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 40px;
+}
+
+.btn-create-report {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 35px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .btn-create-report:hover {
+        background: #218838;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn-create-report:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+.btn-back {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+    padding: 12px 35px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+    .btn-back:hover {
+        background: #e9ecef;
+        border-color: #adb5bd;
+        color: #495057;
+    }
+
+/* تحسينات للأجهزة المحمولة */
+@media (max-width: 768px) {
+    .create-report-container {
+        padding: 20px;
+    }
+
+    .date-fields-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .date-field-wrapper {
+        width: 100%;
+    }
+
+    .date-separator {
+        display: none;
+    }
+
+    .report-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .btn-create-report,
+    .btn-back {
+        width: 100%;
+        text-align: center;
+    }
+}}
