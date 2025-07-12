@@ -122,11 +122,11 @@
                 <span id="detailRequestType" class="supervisor-detail-value"></span>
             </div>
         </div>
-        <!-- ✨ خانة اسم الجهاز الجديدة -->
+        <!-- ✨ خانة التفاصيل المحدثة -->
         <div class="row mb-3">
             <div class="col-12">
                 <label class="supervisor-detail-label">التفاصيل:</label>
-                <span id="detailDeviceName" class="supervisor-detail-value"></span>
+                <span id="detailRequestInfo" class="supervisor-detail-value"></span>
             </div>
         </div>
         <div class="row mb-3">
@@ -174,26 +174,57 @@
         });
 
         // زر عرض التفاصيل
-            document.querySelectorAll(".supervisor-view-details-btn").forEach(btn => {
+                    document.querySelectorAll(".supervisor-view-details-btn").forEach(btn => {
             btn.addEventListener("click", function () {
                 const requestId = this.getAttribute("data-request-id");
                 const requestType = this.getAttribute("data-request-type");
                 const userName = this.getAttribute("data-user-name");
                 const requestDate = this.getAttribute("data-request-date");
                 const status = this.getAttribute("data-status");
-                const deviceName = this.getAttribute("data-device-name");  // ✨ أخذ اسم الجهاز
+                const deviceName = this.getAttribute("data-device-name");
 
                 document.getElementById("detailRequestId").textContent = requestId;
                 document.getElementById("detailRequestType").textContent = requestType;
                 document.getElementById("detailUserName").textContent = userName || "غير محدد";
                 document.getElementById("detailRequestDate").textContent = requestDate;
                 document.getElementById("detailStatus").textContent = status;
-                document.getElementById("detailDeviceName").textContent = deviceName;  // ✨ عرض اسم الجهاز
+
+                if (requestType === "زيارة معمل") {
+                    fetch(`/Supervisor/GetVisitType?id=${requestId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById("detailRequestInfo").textContent = data.visitType;
+                        })
+                        .catch(() => {
+                            document.getElementById("detailRequestInfo").textContent = "خطأ في جلب نوع الزيارة";
+                        });
+                } else if (requestType === "استشارة تقنية") {
+                    fetch(`/Supervisor/GetConsultationDescription?id=${requestId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById("detailRequestInfo").textContent = data.consultationDescription;
+                        })
+                        .catch(() => {
+                            document.getElementById("detailRequestInfo").textContent = "خطأ في جلب وصف الاستشارة";
+                        });
+                } else if (requestType === "دورة تدريبية") {
+                    fetch(`/Supervisor/GetCourseName?id=${requestId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById("detailRequestInfo").textContent = data.courseName;
+                        })
+                        .catch(() => {
+                            document.getElementById("detailRequestInfo").textContent = "خطأ في جلب اسم الدورة";
+                        });
+                } else {
+                    document.getElementById("detailRequestInfo").textContent = deviceName;
+                }
 
                 document.getElementById("detailsModal").style.display = "block";
                 document.getElementById("overlay").style.display = "block";
             });
         });
+
 
         function confirmReject() {
             const reason = document.getElementById("rejectReason").value.trim();
@@ -225,7 +256,59 @@
                 if (data.success) {
                     row.querySelector(".status").textContent = status;
                     row.querySelector(".status").style.color = (status === "موافق عليه") ? "#16a34a" : "#dc2626";
-                    row.querySelector(".actions").innerHTML = "تم الإجراء";
+                    const eyeButton = row.querySelector(".supervisor-view-details-btn").outerHTML;
+                    row.querySelector(".actions").innerHTML = `<span>تم الإجراء</span> ${eyeButton}`;
+
+                    // إعادة ربط event listener لزر العين الجديد
+                    const newEyeButton = row.querySelector(".supervisor-view-details-btn");
+                    newEyeButton.addEventListener("click", function () {
+                        const requestId = this.getAttribute("data-request-id");
+                        const requestType = this.getAttribute("data-request-type");
+                        const userName = this.getAttribute("data-user-name");
+                        const requestDate = this.getAttribute("data-request-date");
+                        const status = this.getAttribute("data-status");
+                        const deviceName = this.getAttribute("data-device-name");
+
+                        document.getElementById("detailRequestId").textContent = requestId;
+                        document.getElementById("detailRequestType").textContent = requestType;
+                        document.getElementById("detailUserName").textContent = userName || "غير محدد";
+                        document.getElementById("detailRequestDate").textContent = requestDate;
+                        document.getElementById("detailStatus").textContent = status;
+
+                        if (requestType === "زيارة معمل") {
+                            fetch(`/Supervisor/GetVisitType?id=${requestId}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    document.getElementById("detailRequestInfo").textContent = data.visitType;
+                                })
+                                .catch(() => {
+                                    document.getElementById("detailRequestInfo").textContent = "خطأ في جلب نوع الزيارة";
+                                });
+                        } else if (requestType === "استشارة تقنية") {
+                            fetch(`/Supervisor/GetConsultationDescription?id=${requestId}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    document.getElementById("detailRequestInfo").textContent = data.consultationDescription;
+                                })
+                                .catch(() => {
+                                    document.getElementById("detailRequestInfo").textContent = "خطأ في جلب وصف الاستشارة";
+                                });
+                        } else if (requestType === "دورة تدريبية") {
+                            fetch(`/Supervisor/GetCourseName?id=${requestId}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    document.getElementById("detailRequestInfo").textContent = data.courseName;
+                                })
+                                .catch(() => {
+                                    document.getElementById("detailRequestInfo").textContent = "خطأ في جلب اسم الدورة";
+                                });
+                        } else {
+                            document.getElementById("detailRequestInfo").textContent = deviceName;
+                        }
+
+                        document.getElementById("detailsModal").style.display = "block";
+                        document.getElementById("overlay").style.display = "block";
+                    });
                 } else {
                     alert("حدث خطأ أثناء التحديث.");
                 }
