@@ -2541,7 +2541,6 @@ button.wil-btn-primary:not(.wil-nav-link) {
 }
 body {
     font-family: 'Tajawal', sans-serif;
-    margin: 40px;
     color: #333;
     direction: rtl;
 }
