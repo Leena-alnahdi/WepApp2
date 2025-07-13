@@ -1,8 +1,10 @@
 ﻿@model List<WepApp2.Models.Request>
 
 @{
+    Layout = "~/Views/Shared/_LayoutSupervisor.cshtml";
     ViewBag.Title = "صفحة المشرف";
 }
+
 
 <!-- ربط ملف CSS -->
 <link rel="stylesheet" href="~/css/Gruop3Style.css" />
@@ -31,7 +33,6 @@
                 <option value="إعارة جهاز">إعارة جهاز</option>
                 <option value="زيارة معمل">زيارة معمل</option>
                 <option value="استشارة تقنية">استشارة تقنية</option>
-                <option value="دورة تدريبية">دورة تدريبية</option>
             </select>
         </div>
         <div class="col-md-4">
@@ -53,10 +54,11 @@
                 <th>التاريخ</th>
                 <th>الحالة</th>
                 <th>الإجراءات</th>
+                <th>التفاصيل</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var request in Model)
+            @foreach (var request in Model.Where(r => r.RequestType != "دورة تدريبية"))
             {
                 <tr>
                     <td>@request.RequestId</td>
@@ -75,17 +77,18 @@
                                 <button type="button" class="supervisor-approve-btn btn btn-success" data-request-id="@request.RequestId">موافقة</button>
                                 <button type="button" class="supervisor-reject-btn btn btn-danger" data-request-id="@request.RequestId">رفض</button>
                             }
-                            <button type="button" class="supervisor-view-details-btn btn btn-outline-success"
-                                    data-request-id="@request.RequestId"
-                                    data-request-type="@request.RequestType"
-                                    data-user-name="@request.User?.UserName"
-                                    data-request-date="@request.RequestDate.ToString("yyyy-MM-dd")"
-                                    data-status="@request.SupervisorStatus"
-                                    data-device-name="@(request.RequestType == "حجز جهاز" || request.RequestType == "إعارة جهاز" ? request.Device?.DeviceName : "غير متاح")">
-                                <i class="fas fa-eye"></i>
-                            </button>
-
                         </div>
+                    </td>
+                    <td>
+                        <button type="button" class="supervisor-view-details-btn btn btn-outline-success"
+                                data-request-id="@request.RequestId"
+                                data-request-type="@request.RequestType"
+                                data-user-name="@request.User?.UserName"
+                                data-request-date="@request.RequestDate.ToString("yyyy-MM-dd")"
+                                data-status="@request.SupervisorStatus"
+                                data-device-name="@(request.RequestType == "حجز جهاز" || request.RequestType == "إعارة جهاز" ? request.Device?.DeviceName : "غير متاح")">
+                            <i class="fas fa-eye"></i>
+                        </button>
                     </td>
                 </tr>
             }
@@ -174,7 +177,7 @@
         });
 
         // زر عرض التفاصيل
-                    document.querySelectorAll(".supervisor-view-details-btn").forEach(btn => {
+        document.querySelectorAll(".supervisor-view-details-btn").forEach(btn => {
             btn.addEventListener("click", function () {
                 const requestId = this.getAttribute("data-request-id");
                 const requestType = this.getAttribute("data-request-type");
@@ -206,15 +209,6 @@
                         })
                         .catch(() => {
                             document.getElementById("detailRequestInfo").textContent = "خطأ في جلب وصف الاستشارة";
-                        });
-                } else if (requestType === "دورة تدريبية") {
-                    fetch(`/Supervisor/GetCourseName?id=${requestId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            document.getElementById("detailRequestInfo").textContent = data.courseName;
-                        })
-                        .catch(() => {
-                            document.getElementById("detailRequestInfo").textContent = "خطأ في جلب اسم الدورة";
                         });
                 } else {
                     document.getElementById("detailRequestInfo").textContent = deviceName;
@@ -256,59 +250,7 @@
                 if (data.success) {
                     row.querySelector(".status").textContent = status;
                     row.querySelector(".status").style.color = (status === "موافق عليه") ? "#16a34a" : "#dc2626";
-                    const eyeButton = row.querySelector(".supervisor-view-details-btn").outerHTML;
-                    row.querySelector(".actions").innerHTML = `<span>تم الإجراء</span> ${eyeButton}`;
-
-                    // إعادة ربط event listener لزر العين الجديد
-                    const newEyeButton = row.querySelector(".supervisor-view-details-btn");
-                    newEyeButton.addEventListener("click", function () {
-                        const requestId = this.getAttribute("data-request-id");
-                        const requestType = this.getAttribute("data-request-type");
-                        const userName = this.getAttribute("data-user-name");
-                        const requestDate = this.getAttribute("data-request-date");
-                        const status = this.getAttribute("data-status");
-                        const deviceName = this.getAttribute("data-device-name");
-
-                        document.getElementById("detailRequestId").textContent = requestId;
-                        document.getElementById("detailRequestType").textContent = requestType;
-                        document.getElementById("detailUserName").textContent = userName || "غير محدد";
-                        document.getElementById("detailRequestDate").textContent = requestDate;
-                        document.getElementById("detailStatus").textContent = status;
-
-                        if (requestType === "زيارة معمل") {
-                            fetch(`/Supervisor/GetVisitType?id=${requestId}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    document.getElementById("detailRequestInfo").textContent = data.visitType;
-                                })
-                                .catch(() => {
-                                    document.getElementById("detailRequestInfo").textContent = "خطأ في جلب نوع الزيارة";
-                                });
-                        } else if (requestType === "استشارة تقنية") {
-                            fetch(`/Supervisor/GetConsultationDescription?id=${requestId}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    document.getElementById("detailRequestInfo").textContent = data.consultationDescription;
-                                })
-                                .catch(() => {
-                                    document.getElementById("detailRequestInfo").textContent = "خطأ في جلب وصف الاستشارة";
-                                });
-                        } else if (requestType === "دورة تدريبية") {
-                            fetch(`/Supervisor/GetCourseName?id=${requestId}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    document.getElementById("detailRequestInfo").textContent = data.courseName;
-                                })
-                                .catch(() => {
-                                    document.getElementById("detailRequestInfo").textContent = "خطأ في جلب اسم الدورة";
-                                });
-                        } else {
-                            document.getElementById("detailRequestInfo").textContent = deviceName;
-                        }
-
-                        document.getElementById("detailsModal").style.display = "block";
-                        document.getElementById("overlay").style.display = "block";
-                    });
+                    row.querySelector(".actions").innerHTML = `<span>تم الإجراء</span>`;
                 } else {
                     alert("حدث خطأ أثناء التحديث.");
                 }
