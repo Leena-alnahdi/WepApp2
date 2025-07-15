@@ -1,5 +1,5 @@
 ﻿@{
-    Layout = "~/Views/Shared/_LayoutReports.cshtml";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
 @section Styles {
@@ -124,7 +124,7 @@
                 <button type="submit" class="btn-create-report">
                     إنشاء التقرير
                 </button>
-                <a href="@Url.Action("Index", "Reports")" class="btn-back">
+                <a href="@Url.Action("AllReports", "Reports")" class="btn-back">
                     العودة
                 </a>
             </div>
